@@ -48,6 +48,29 @@
         .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; }
         .logo span { color: var(--accent); }
 
+        /* SpaceX Style Timer Box */
+        .timer-box {
+            border: 1px solid #333;
+            padding: 10px 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+        }
+        .timer-label {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+        .timer-value {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: 1px;
+            min-width: 120px;
+        }
+
         /* Hero */
         .hero {
             height: 100vh; display: flex; flex-direction: column;
@@ -65,7 +88,7 @@
         }
         .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(191, 255, 0, 0.3); }
 
-        /* STATUS QUO SECTION (Ta fajna z 1 wersji) */
+        /* STATUS QUO SECTION */
         .status-quo {
             padding: 120px 10%;
             background: var(--surface);
@@ -116,6 +139,7 @@
         @media (max-width: 1024px) {
             .rocket-viewer-section { flex-direction: column; }
             .model-container { height: 500px; }
+            .timer-box { display: none; }
         }
     </style>
 </head>
@@ -123,7 +147,10 @@
 
     <nav>
         <div class="logo">FERC<span>.</span></div>
-        <div style="font-size: 0.7rem; letter-spacing: 2px; font-weight: 700; border-bottom: 2px solid var(--accent);">SYSTEM_ONLINE</div>
+        <div class="timer-box">
+            <span class="timer-label">UPCOMING LAUNCH</span>
+            <span id="countdown" class="timer-value">T-00:00:00:00</span>
+        </div>
     </nav>
 
     <header class="hero">
@@ -193,7 +220,7 @@
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // Płynny scroll do przycisku (zabezpieczenie JS dla starszych przeglądarek)
+        // Płynny scroll do przycisku
         document.querySelector('.primary-btn').addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
@@ -201,13 +228,33 @@
                 behavior: 'smooth'
             });
         });
+
+        // Timer SpaceX Style
+        function updateCountdown() {
+            const targetDate = new Date(2026, 5, 26, 0, 0, 0).getTime(); // 26 Czerwca 2026
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const d = days.toString().padStart(2, '0');
+            const h = hours.toString().padStart(2, '0');
+            const m = minutes.toString().padStart(2, '0');
+            const s = seconds.toString().padStart(2, '0');
+
+            document.getElementById("countdown").innerHTML = `T-${d}:${h}:${m}:${s}`;
+
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "MISSION ACTIVE";
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
     </script>
 
 </body>
 </html>
-
-
-
-
-
-
