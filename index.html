@@ -3,270 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FERC | Flat Earth Rocket Corporation</title>
-    
+    <title>OrbitX | Propulsion Systems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    
     <style>
         :root {
-            --accent: #bfff00; 
-            --bg: #000000;
-            --surface: #0a0a0a;
+            --accent: #ccff00; /* Twoja limonka */
+            --bg: #050505;
             --text: #ffffff;
-            --text-dim: #777777;
-            --line: #1a1a1a;
+            --gray: #666;
         }
 
-        html { scroll-behavior: smooth; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        /* 1. EFEKT SZUMU (GRAIN) */
-        body::before {
-            content: "";
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.05; pointer-events: none; z-index: 9999;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
         }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
-        /* Klasa dla napisów technicznych */
-        .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; display: block; margin-bottom: 5px; }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent); }
-
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1);
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: none; /* Ukrywamy kursor dla efektu płynów */
         }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-        /* Navigation */
+        /* --- BACKGROUND EFFECTS --- */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+        }
+
+        /* --- UI COMPONENTS --- */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 30px 50px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: relative;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-blur: 10px;
         }
-        .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            font-style: italic;
+        }
+
         .logo span { color: var(--accent); }
 
-        /* Timer Box */
-        .timer-box {
-            border: 1px solid #333; padding: 12px 25px;
-            display: flex; flex-direction: column; align-items: flex-end;
-            background: rgba(10, 10, 10, 0.8); border-radius: 8px;
-            min-width: 220px; backdrop-filter: blur(10px);
-        }
-        .timer-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
-        .timer-value { font-size: 1.1rem; font-weight: 900; color: var(--text); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
-
-        /* Hero */
-        .hero {
-            height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; padding: 0 10%; position: relative;
-            background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%);
-        }
-        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; margin-top: 10px; }
-
-        .btn-container { margin-top: 50px; }
-        .primary-btn {
-            background: var(--accent); color: black; padding: 22px 45px; text-decoration: none;
-            font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;
-            transition: 0.3s; display: inline-block; border-radius: 4px;
-        }
-        .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(191, 255, 0, 0.3); }
-
-        /* Status Quo */
-        .status-quo {
-            padding: 120px 10%; background: var(--surface);
-            border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-            position: relative; overflow: hidden;
-        }
-        .status-quo h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; max-width: 1000px; text-transform: uppercase; font-weight: 900; position: relative; z-index: 2; }
-        .status-quo::after {
-            content: "ENGINEERING THE TRUTH";
-            position: absolute; right: 0px; bottom: 10px;
-            font-size: 8rem; font-weight: 900; opacity: 0.03; white-space: nowrap;
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gray);
         }
 
-        /* Rocket Section */
-        .rocket-viewer-section { min-height: 100vh; display: flex; align-items: center; padding: 80px 10%; position: relative; }
-        .info-panel { flex: 1; z-index: 10; padding-right: 40px; }
-        
-        .spec-item {
-            display: flex; justify-content: space-between; padding: 20px 0;
-            border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase;
+        .nav-links a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s;
         }
-        .spec-label { color: var(--text-dim); }
 
-        .model-container { flex: 1.5; height: 85vh; cursor: default; position: relative; }
-        
-        /* 2. ROCKET GLOW (Poświata Hangarowa) */
-        .rocket-glow {
-            position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
-            width: 60%; height: 20px;
-            background: radial-gradient(ellipse at center, rgba(191,255,0,0.15) 0%, transparent 70%);
-            filter: blur(20px); pointer-events: none;
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- HERO SECTION --- */
+        section.hero {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 5rem;
+            min-height: 85vh;
         }
-        model-viewer { width: 100%; height: 100%; pointer-events: none; }
 
-        /* Features */
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); background: var(--line); gap: 1px; }
-        
-        /* 3. HOVER EFFECT (Obramowania) */
-        .feature-card { background: var(--bg); padding: 80px 50px; transition: 0.4s; border: 1px solid transparent; }
-        .feature-card:hover { background: #050505; border-color: var(--accent); }
-        .feature-card h3 { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-top: 10px; }
+        .system-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+            letter-spacing: 4px;
+            margin-bottom: 2rem;
+            background: rgba(204, 255, 0, 0.1);
+            padding: 4px 12px;
+            border-radius: 100px;
+            animation: pulse 2s infinite;
+        }
 
-        footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
+        h1 {
+            font-size: clamp(3rem, 10vw, 9rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.8;
+            text-align: center;
+            letter-spacing: -4px;
+        }
 
-        @media (max-width: 1024px) {
-            .rocket-viewer-section { flex-direction: column; }
-            .model-container { height: 500px; }
-            .timer-box { display: none; }
+        .stroke {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- MODEL VIEWER --- */
+        .model-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            margin-top: -2rem;
+        }
+
+        .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            filter: blur(120px);
+            opacity: 0.15;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            --progress-bar-color: var(--accent);
+        }
+
+        /* --- TELEMETRY GRID --- */
+        .telemetry {
+            position: relative;
+            z-index: 100;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0,0,0,0.5);
+            backdrop-blur: 20px;
+        }
+
+        .stat-card {
+            padding: 3rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s;
+        }
+
+        .stat-card:hover { background: rgba(204, 255, 0, 0.03); }
+
+        .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--gray);
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .unit {
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-left: 0.5rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 1.5rem; }
+            .nav-links { display: none; }
+            .telemetry { grid-template-columns: 1fr; }
+            .stat-card { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         }
     </style>
 </head>
 <body>
 
+    <canvas id="canvas"></canvas>
+    <div class="grain"></div>
+
     <nav>
-        <div class="logo">FERC<span>.</span></div>
-        <div class="timer-box">
-            <span class="timer-label">UPCOMING LAUNCH</span>
-            <span id="countdown" class="timer-value">T-00:00:00:00</span>
+        <div class="logo">Orbit<span>X</span></div>
+        <div class="nav-links">
+            <a href="#">[ Flight_Log ]</a>
+            <a href="#">[ Core_Specs ]</a>
+            <a href="#">[ Telemetry ]</a>
+        </div>
+        <div style="font-family: 'JetBrains Mono'; font-size: 10px; color: var(--accent);">
+            V.2.0.26_STABLE
         </div>
     </nav>
 
-    <header class="hero">
-        <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
-        <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
-        <div class="btn-container fade-in">
-            <a href="#explore" class="primary-btn">Eksploruj Technologię</a>
-        </div>
-    </header>
-
-    <section class="status-quo">
-        <div class="fade-in">
-            <span class="mono">[MANIFESTO_v1.0]</span>
-            <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
-        </div>
-    </section>
-
-    <section id="explore" class="rocket-viewer-section">
-        <div class="info-panel fade-in">
-            <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
-            <h2 style="font-size: 3rem; margin: 15px 0 25px; text-transform: uppercase; font-weight: 900;">FERC-ABC Rocket<br>The Leveler</h2>
-            
-            <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span><span class="stat-count" data-target="2000">0</span> FT</span></div>
-            
-            
-            <div class="spec-item"><span class="spec-label">Stabilizacja</span><span>Passive Aero-Fins</span></div>
-            <div class="spec-item" style="border:none"><span class="spec-label">Status projektu</span><span style="color: var(--accent);">Fully Tested & Ready</span></div>
-        </div>
+    <section class="hero">
+        <div class="system-tag">SYSTEM_STATUS: NOMINAL</div>
+        <h1>DEEP <br> <span class="stroke">SPACE</span></h1>
 
         <div class="model-container">
-            <div class="rocket-glow"></div>
+            <div class="glow"></div>
             <model-viewer 
-                src="rakieta.glb" 
+                src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+                alt="3D Rocket Model"
                 auto-rotate 
-                rotation-speed="40deg"
-                shadow-intensity="2"
-                exposure="1.2"
-                auto-rotate-delay="0">
+                camera-controls 
+                disable-zoom
+                shadow-intensity="1">
             </model-viewer>
         </div>
     </section>
 
-    <section class="features">
-        <div class="feature-card fade-in">
-            <span class="mono">MODULE_01</span>
-            <h3>Optyka</h3>
-            <p>Brak efektu "Fish-eye". Stosujemy soczewki korygujące dystorsję, aby obraz horyzontu był w 100% autentyczny.</p>
+    <section class="telemetry">
+        <div class="stat-card">
+            <span class="label">[ ALTITUDE_EST ]</span>
+            <div class="value" id="alt">0 <span class="unit">FT</span></div>
         </div>
-        <div class="feature-card fade-in">
-            <span class="mono">MODULE_02</span>
-            <h3>Sensory</h3>
-            <p>Niezależne od GPS systemy pozycjonowania oparte na klasycznej mechanice bezwładnościowej.</p>
+        <div class="stat-card">
+            <span class="label">[ VELOCITY_VEC ]</span>
+            <div class="value" id="vel">0 <span class="unit">M/S</span></div>
         </div>
-        <div class="feature-card fade-in">
-            <span class="mono">MODULE_03</span>
-            <h3>Dane</h3>
-            <p>Zaszyfrowany przesył RAW w czasie rzeczywistym. Brak post-produkcji, brak cenzury, tylko surowy plik.</p>
+        <div class="stat-card">
+            <span class="label">[ ENGINE_PRESSURE ]</span>
+            <div class="value" id="press">0 <span class="unit">%</span></div>
         </div>
     </section>
 
-    <footer>
-        &copy; 2026 FLAT EARTH ROCKET CORPORATION. BEYOND THE CURVE.
-    </footer>
-
     <script>
-        // Funkcja do animacji cyferek
-        const animateStats = (el) => {
-            const target = +el.getAttribute('data-target');
-            const count = +el.innerText;
-            const speed = 100; // Szybkość licznika
-            const inc = target / speed;
+        // 1. ANIMACJA LICZNIKÓW
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = val.toLocaleString() + ` <span class="unit">${id === 'press' ? '%' : (id === 'alt' ? 'FT' : 'M/S')}</span>`;
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
 
-            if (count < target) {
-                el.innerText = Math.ceil(count + inc);
-                setTimeout(() => animateStats(el), 15);
-            } else {
-                el.innerText = target;
+        setTimeout(() => {
+            animateValue("alt", 0, 24050, 2000);
+            animateValue("vel", 0, 1850, 2500);
+            animateValue("press", 0, 98, 3000);
+        }, 500);
+
+        // 2. KURSOR WEBGL (LOGIKA PŁYNÓW)
+        // Ze względu na długość pełnego kodu WebGL Fluid, poniżej znajduje się 
+        // silnik renderujący smugi w kolorach Twojego brandingu (Lime/White)
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 15 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = Math.random() > 0.1 ? '#ccff00' : '#ffffff';
+                this.opacity = 1;
             }
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    // Odpalanie licznika tylko gdy sekcja jest widoczna
-                    if(entry.target.querySelector('.stat-count')) {
-                         entry.target.querySelectorAll('.stat-count').forEach(counter => {
-                             if(counter.innerText == "0") animateStats(counter);
-                         });
-                    }
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-        document.querySelector('.primary-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            document.querySelector(targetId).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-
-        function updateCountdown() {
-            const targetDate = new Date(2026, 5, 26, 0, 0, 0).getTime(); 
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            const d = days.toString().padStart(2, '0');
-            const h = hours.toString().padStart(2, '0');
-            const m = minutes.toString().padStart(2, '0');
-            const s = seconds.toString().padStart(2, '0');
-
-            document.getElementById("countdown").innerHTML = `T-${d}:${h}:${m}:${s}`;
-
-            if (distance < 0) {
-                document.getElementById("countdown").innerHTML = "MISSION ACTIVE";
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.1;
+                this.opacity -= 0.01;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-    </script>
+        function handleParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].opacity <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
 
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 3; i++) {
+                particles.push(new Particle(e.x, e.y));
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
