@@ -6,7 +6,7 @@
     <title>FERC | Flat Earth Rocket Corporation</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -20,20 +20,30 @@
 
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        /* Efekt Szumu (Grain) */
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; pointer-events: none; z-index: 9999;
+        }
+
         body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
+        .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; }
+
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent); }
 
+        /* Animacje wejścia */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
             transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1);
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         /* Navigation */
         nav {
@@ -44,32 +54,14 @@
         .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; }
         .logo span { color: var(--accent); }
 
-        /* Ulepszony Timer Box */
         .timer-box {
-            border: 1px solid #333;
-            padding: 12px 25px;
-            display: flex;
-            flex-direction: column; /* Tekst nad czasem dla lepszego balansu */
-            align-items: flex-end;
-            background: rgba(10, 10, 10, 0.8);
-            border-radius: 8px; /* Zaokrąglenie */
-            min-width: 220px; /* Stała szerokość */
-            backdrop-filter: blur(10px);
+            border: 1px solid #333; padding: 12px 25px;
+            display: flex; flex-direction: column; align-items: flex-end;
+            background: rgba(10, 10, 10, 0.8); border-radius: 8px;
+            min-width: 220px; backdrop-filter: blur(10px);
         }
-        .timer-label {
-            font-size: 0.6rem;
-            letter-spacing: 2px;
-            color: var(--accent);
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .timer-value {
-            font-size: 1.1rem;
-            font-weight: 900;
-            color: var(--text);
-            letter-spacing: 1px;
-            font-variant-numeric: tabular-nums; /* Zapobiega skakaniu cyfr */
-        }
+        .timer-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+        .timer-value { font-size: 1.1rem; font-weight: 900; font-variant-numeric: tabular-nums; }
 
         /* Hero */
         .hero {
@@ -77,67 +69,42 @@
             justify-content: center; padding: 0 10%; position: relative;
             background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%);
         }
-        .hero p { color: var(--accent); letter-spacing: 4px; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 15px; font-weight: 700; }
-        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; }
+        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; margin-top: 10px; }
 
-        .btn-container { margin-top: 50px; }
         .primary-btn {
-            background: var(--accent); color: black; padding: 22px 45px; text-decoration: none;
+            margin-top: 50px; background: var(--accent); color: black; padding: 22px 45px; text-decoration: none;
             font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;
-            transition: 0.3s; display: inline-block;
+            transition: 0.3s; display: inline-block; border-radius: 4px;
         }
-        .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(191, 255, 0, 0.3); }
+        .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(191, 255, 0, 0.4); }
 
-        .status-quo {
-            padding: 120px 10%;
-            background: var(--surface);
-            border-top: 1px solid var(--line);
-            border-bottom: 1px solid var(--line);
-            position: relative;
-            overflow: hidden;
-        }
-        .status-quo h2 {
-            font-size: clamp(2rem, 5vw, 4rem);
-            line-height: 1.1;
-            max-width: 1000px;
-            text-transform: uppercase;
-            font-weight: 900;
-        }
-        .status-quo::after {
-            content: "ENGINEERING THE TRUTH";
-            position: absolute; right: 0px; bottom: 10px;
-            font-size: 8rem; font-weight: 900; opacity: 0.03; white-space: nowrap;
-        }
+        /* Manifest */
+        .status-quo { padding: 150px 10%; background: var(--surface); border-top: 1px solid var(--line); position: relative; overflow: hidden; }
+        .status-quo h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; font-weight: 900; text-transform: uppercase; position: relative; z-index: 2; }
+        .status-quo::after { content: "TRUTH"; position: absolute; right: -5%; bottom: -10%; font-size: 20rem; font-weight: 900; opacity: 0.02; }
 
-        .rocket-viewer-section {
-            min-height: 100vh; display: flex; align-items: center;
-            padding: 80px 10%; position: relative;
-        }
+        /* Rocket Section */
+        .rocket-viewer-section { min-height: 100vh; display: flex; align-items: center; padding: 80px 10%; }
         .info-panel { flex: 1; z-index: 10; padding-right: 40px; }
+        .spec-item { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase; }
+
+        .model-container { flex: 1.5; height: 85vh; position: relative; }
         
-        .spec-item {
-            display: flex; justify-content: space-between; padding: 20px 0;
-            border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase;
+        /* Efekt Głębi/Hangar pod rakietą */
+        .rocket-glow {
+            position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+            width: 60%; height: 20px; background: radial-gradient(ellipse at center, rgba(191,255,0,0.15) 0%, transparent 70%);
+            filter: blur(20px); pointer-events: none;
         }
-        .spec-label { color: var(--text-dim); }
 
-        .model-container { 
-            flex: 1.5; height: 85vh; cursor: default;
-        }
-        model-viewer { width: 100%; height: 100%; pointer-events: none; }
-
+        /* Features */
         .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); background: var(--line); gap: 1px; }
-        .feature-card { background: var(--bg); padding: 80px 50px; transition: 0.4s; }
-        .feature-card:hover { background: #050505; }
-        .feature-card h3 { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
+        .feature-card { background: var(--bg); padding: 80px 50px; transition: 0.4s; border: 1px solid transparent; }
+        .feature-card:hover { background: #050505; border-color: var(--accent); }
 
         footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
 
-        @media (max-width: 1024px) {
-            .rocket-viewer-section { flex-direction: column; }
-            .model-container { height: 500px; }
-            .timer-box { display: none; }
-        }
+        @media (max-width: 1024px) { .rocket-viewer-section { flex-direction: column; } .model-container { height: 500px; } .timer-box { display: none; } }
     </style>
 </head>
 <body>
@@ -145,13 +112,13 @@
     <nav>
         <div class="logo">FERC<span>.</span></div>
         <div class="timer-box">
-            <span class="timer-label">UPCOMING LAUNCH</span>
+            <span class="timer-label">LAUNCH_WINDOW_OPENING</span>
             <span id="countdown" class="timer-value">T-00:00:00:00</span>
         </div>
     </nav>
 
     <header class="hero">
-        <p class="fade-in">// INŻYNIERIA LOTNICZA NOWEJ GENERACJI</p>
+        <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
         <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
         <div class="btn-container fade-in">
             <a href="#explore" class="primary-btn">Eksploruj Technologię</a>
@@ -160,44 +127,43 @@
 
     <section class="status-quo">
         <div class="fade-in">
-            <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
+            <span class="mono">[MANIFESTO_v1.0]</span>
+            <h2 style="color: var(--text-dim); margin-top: 10px;">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
         </div>
     </section>
 
     <section id="explore" class="rocket-viewer-section">
         <div class="info-panel fade-in">
-            <h4 style="color: var(--accent); letter-spacing: 3px; margin-bottom: 10px; font-size: 0.8rem;">TECHNICAL SPEC</h4>
-            <h2 style="font-size: 3rem; margin-bottom: 25px; text-transform: uppercase; font-weight: 900;">FERC-ABC Rocket<br>The Leveler</h2>
+            <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
+            <h2 style="font-size: 3rem; margin: 15px 0 25px; text-transform: uppercase; font-weight: 900;">FERC-ABC<br>The Leveler</h2>
             
-            <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span>2000 FT</span></div>
-            <div class="spec-item"><span class="spec-label">Stabilizacja</span><span>Passive Aero-Fins</span></div>
-            <div class="spec-item" style="border:none"><span class="spec-label">Status projektu</span><span style="color: var(--accent);">Fully Tested & Ready</span></div>
+            <div class="spec-item"><span style="color:var(--text-dim)">Pułap docelowy</span><span><span class="stat-count" data-target="2000">0</span> FT</span></div>
+            <div class="spec-item"><span style="color:var(--text-dim)">Stabilizacja</span><span>Passive Aero-Fins</span></div>
+            <div class="spec-item"><span style="color:var(--text-dim)">Optyka</span><span>Zero-Distortion 8K</span></div>
+            <div class="spec-item" style="border:none"><span style="color:var(--text-dim)">Status</span><span style="color: var(--accent);">Fully Tested & Ready</span></div>
         </div>
 
         <div class="model-container">
-            <model-viewer 
-                src="rakieta.glb" 
-                auto-rotate 
-                rotation-speed="40deg"
-                shadow-intensity="2"
-                exposure="1.2"
-                auto-rotate-delay="0">
-            </model-viewer>
+            <div class="rocket-glow"></div>
+            <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2"></model-viewer>
         </div>
     </section>
 
     <section class="features">
         <div class="feature-card fade-in">
-            <h3>01. Optyka</h3>
-            <p>Brak efektu "Fish-eye". Stosujemy soczewki korygujące dystorsję, aby obraz horyzontu był w 100% autentyczny.</p>
+            <span class="mono">MODULE_01</span>
+            <h3 style="margin-top:10px">Optyka</h3>
+            <p style="color:var(--text-dim); margin-top:15px">Soczewki rektilinearne eliminują efekt rybiego oka, dostarczając surowy dowód wizualny bez cyfrowej obróbki.</p>
         </div>
         <div class="feature-card fade-in">
-            <h3>02. Sensory</h3>
-            <p>Niezależne od GPS systemy pozycjonowania oparte na klasycznej mechanice bezwładnościowej.</p>
+            <span class="mono">MODULE_02</span>
+            <h3 style="margin-top:10px">Sensory</h3>
+            <p style="color:var(--text-dim); margin-top:15px">Mechaniczne żyroskopy monitorują orientację rakiety względem płaszczyzny ziemi w czasie rzeczywistym.</p>
         </div>
         <div class="feature-card fade-in">
-            <h3>03. Dane</h3>
-            <p>Zaszyfrowany przesył RAW w czasie rzeczywistym. Brak post-produkcji, brak cenzury, tylko surowy plik.</p>
+            <span class="mono">MODULE_03</span>
+            <h3 style="margin-top:10px">Transmisja</h3>
+            <p style="color:var(--text-dim); margin-top:15px">Zaszyfrowany protokół RAW gwarantuje, że dane które otrzymujesz, są identyczne z tymi zarejestrowanymi w locie.</p>
         </div>
     </section>
 
@@ -206,49 +172,50 @@
     </footer>
 
     <script>
+        // Animacja cyferek (odliczanie w górę)
+        const animateStats = (el) => {
+            const target = +el.getAttribute('data-target');
+            const count = +el.innerText;
+            const speed = 200; 
+            const inc = target / speed;
+
+            if (count < target) {
+                el.innerText = Math.ceil(count + inc);
+                setTimeout(() => animateStats(el), 1);
+            } else {
+                el.innerText = target;
+            }
+        };
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    // Jeśli to sekcja specyfikacji, odpalamy liczniki
+                    if(entry.target.classList.contains('info-panel')) {
+                        document.querySelectorAll('.stat-count').forEach(animateStats);
+                    }
                 }
             });
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        document.querySelector('.primary-btn').addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            document.querySelector(targetId).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-
+        // Timer SpaceX
         function updateCountdown() {
             const targetDate = new Date(2026, 5, 26, 0, 0, 0).getTime(); 
             const now = new Date().getTime();
             const distance = targetDate - now;
-
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            const d = days.toString().padStart(2, '0');
-            const h = hours.toString().padStart(2, '0');
-            const m = minutes.toString().padStart(2, '0');
-            const s = seconds.toString().padStart(2, '0');
-
-            document.getElementById("countdown").innerHTML = `T-${d}:${h}:${m}:${s}`;
-
-            if (distance < 0) {
-                document.getElementById("countdown").innerHTML = "MISSION ACTIVE";
-            }
+            document.getElementById("countdown").innerText = 
+                `T-${days.toString().padStart(2,'0')}:${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
         }
-
         setInterval(updateCountdown, 1000);
         updateCountdown();
     </script>
-
 </body>
 </html>
