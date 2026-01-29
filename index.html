@@ -18,17 +18,13 @@
             --line: #1a1a1a;
         }
 
-        /* Płynne przewijanie na poziomie przeglądarki */
         html { scroll-behavior: smooth; }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent); }
 
-        /* Animacje wejścia */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -48,27 +44,31 @@
         .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; }
         .logo span { color: var(--accent); }
 
-        /* SpaceX Style Timer Box */
+        /* Ulepszony Timer Box */
         .timer-box {
             border: 1px solid #333;
-            padding: 10px 20px;
+            padding: 12px 25px;
             display: flex;
-            gap: 20px;
-            align-items: center;
-            background: rgba(0,0,0,0.5);
+            flex-direction: column; /* Tekst nad czasem dla lepszego balansu */
+            align-items: flex-end;
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 8px; /* Zaokrąglenie */
+            min-width: 220px; /* Stała szerokość */
+            backdrop-filter: blur(10px);
         }
         .timer-label {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             letter-spacing: 2px;
-            color: var(--text-dim);
+            color: var(--accent);
             font-weight: 700;
+            margin-bottom: 4px;
         }
         .timer-value {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 900;
             color: var(--text);
             letter-spacing: 1px;
-            min-width: 120px;
+            font-variant-numeric: tabular-nums; /* Zapobiega skakaniu cyfr */
         }
 
         /* Hero */
@@ -88,7 +88,6 @@
         }
         .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(191, 255, 0, 0.3); }
 
-        /* STATUS QUO SECTION */
         .status-quo {
             padding: 120px 10%;
             background: var(--surface);
@@ -110,7 +109,6 @@
             font-size: 8rem; font-weight: 900; opacity: 0.03; white-space: nowrap;
         }
 
-        /* 3D SHOWCASE */
         .rocket-viewer-section {
             min-height: 100vh; display: flex; align-items: center;
             padding: 80px 10%; position: relative;
@@ -128,7 +126,6 @@
         }
         model-viewer { width: 100%; height: 100%; pointer-events: none; }
 
-        /* Features */
         .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); background: var(--line); gap: 1px; }
         .feature-card { background: var(--bg); padding: 80px 50px; transition: 0.4s; }
         .feature-card:hover { background: #050505; }
@@ -209,7 +206,6 @@
     </footer>
 
     <script>
-        // Animacja pojawiania się przy przewijaniu
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -220,7 +216,6 @@
 
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        // Płynny scroll do przycisku
         document.querySelector('.primary-btn').addEventListener('click', function(e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
@@ -229,9 +224,8 @@
             });
         });
 
-        // Timer SpaceX Style
         function updateCountdown() {
-            const targetDate = new Date(2026, 5, 26, 0, 0, 0).getTime(); // 26 Czerwca 2026
+            const targetDate = new Date(2026, 5, 26, 0, 0, 0).getTime(); 
             const now = new Date().getTime();
             const distance = targetDate - now;
 
