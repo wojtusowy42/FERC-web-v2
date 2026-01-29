@@ -10,27 +10,29 @@
     
     <style>
         :root {
-            --accent: #bfff00; /* Electric Lime */
+            --accent: #bfff00; 
             --bg: #000000;
-            --surface: #111111;
+            --surface: #0a0a0a;
             --text: #ffffff;
-            --text-dim: #666666;
-            --line: #222222;
+            --text-dim: #777777;
+            --line: #1a1a1a;
         }
+
+        /* Płynne przewijanie na poziomie przeglądarki */
+        html { scroll-behavior: smooth; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent); }
 
-        /* Global Fade-in animation on scroll */
+        /* Animacje wejścia */
         .fade-in {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1);
         }
         .fade-in.visible {
             opacity: 1;
@@ -39,112 +41,81 @@
 
         /* Navigation */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 40px;
+            position: fixed; top: 0; width: 100%; padding: 30px 50px;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
         }
-        .logo { font-weight: 900; font-size: 1.5rem; letter-spacing: -1px; }
+        .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; }
         .logo span { color: var(--accent); }
 
         /* Hero */
         .hero {
             height: 100vh; display: flex; flex-direction: column;
             justify-content: center; padding: 0 10%; position: relative;
-            /* Parallax effect background */
-            background: url('https://images.unsplash.com/photo-1462331940025-496dfcac6d1c?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover fixed;
-            background-attachment: fixed;
-            background-size: cover;
+            background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%);
         }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); /* Dark overlay */
-            z-index: 1;
-        }
-        .hero > * { z-index: 2; } /* Ensure text is above overlay */
+        .hero p { color: var(--accent); letter-spacing: 4px; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 15px; font-weight: 700; }
+        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; }
 
-        .hero h1 { 
-            font-size: clamp(3rem, 10vw, 8rem); font-weight: 900; line-height: 0.9; text-transform: uppercase; 
-            margin-bottom: 20px;
-        }
-        .hero p { color: var(--text-dim); letter-spacing: 5px; margin-bottom: 20px; }
-        .accent-text { color: var(--accent); }
-
-        /* CTA Button */
+        .btn-container { margin-top: 50px; }
         .primary-btn {
-            background: var(--accent); color: black; padding: 20px 40px; text-decoration: none;
-            font-weight: bold; text-transform: uppercase; font-size: 0.8rem;
-            transition: transform 0.3s ease, background 0.3s ease;
+            background: var(--accent); color: black; padding: 22px 45px; text-decoration: none;
+            font-weight: 900; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;
+            transition: 0.3s; display: inline-block;
         }
-        .primary-btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            background: #e6ff00; /* Slightly brighter on hover */
+        .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(191, 255, 0, 0.3); }
+
+        /* STATUS QUO SECTION (Ta fajna z 1 wersji) */
+        .status-quo {
+            padding: 120px 10%;
+            background: var(--surface);
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            position: relative;
+            overflow: hidden;
+        }
+        .status-quo h2 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1.1;
+            max-width: 1000px;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+        .status-quo::after {
+            content: "ENGINEERING THE TRUTH";
+            position: absolute; right: -50px; bottom: 10px;
+            font-size: 8rem; font-weight: 900; opacity: 0.03; white-space: nowrap;
         }
 
-        /* 3D ROCKET SHOWCASE */
+        /* 3D SHOWCASE */
         .rocket-viewer-section {
             min-height: 100vh; display: flex; align-items: center;
-            padding: 100px 10%; border-top: 1px solid var(--line);
-            background: radial-gradient(circle at 70% 50%, #0a0a0a 0%, #000 70%);
+            padding: 80px 10%; position: relative;
         }
-        .info-panel { flex: 1; max-width: 500px; z-index: 10; padding-right: 50px; }
-        .info-panel h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; }
-        .description { font-size: 1rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 50px; }
+        .info-panel { flex: 1; z-index: 10; padding-right: 40px; }
         
-        /* Tabela specyfikacji - Kopia SpaceX */
         .spec-item {
             display: flex; justify-content: space-between; padding: 20px 0;
-            border-bottom: 1px solid var(--line); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase;
         }
-        .spec-label { font-weight: 600; color: var(--text); }
-        .spec-value { font-weight: 300; color: var(--text); }
+        .spec-label { color: var(--text-dim); }
 
-        .model-container { flex: 1.5; height: 90vh; display: flex; align-items: center; justify-content: center; }
-        model-viewer {
-            width: 100%; height: 100%; outline: none; --poster-color: transparent;
-            pointer-events: none; /* Disable interaction */
+        .model-container { 
+            flex: 1.5; height: 85vh; cursor: default;
         }
+        model-viewer { width: 100%; height: 100%; pointer-events: none; }
 
-        /* Manifesto & Features */
-        .manifesto { padding: 150px 10%; border-top: 1px solid var(--line); }
-        .manifesto h2 { font-size: 3rem; max-width: 800px; line-height: 1.2; }
-        
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; background: var(--line); }
-        .feature-card { background: var(--bg); padding: 60px; transition: background 0.3s ease, transform 0.3s ease; }
-        .feature-card:hover { background: var(--surface); transform: translateY(-5px); }
-        .feature-card h3 { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 20px; letter-spacing: 2px; }
-        .feature-card p { color: var(--text-dim); }
+        /* Features */
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); background: var(--line); gap: 1px; }
+        .feature-card { background: var(--bg); padding: 80px 50px; transition: 0.4s; }
+        .feature-card:hover { background: #050505; }
+        .feature-card h3 { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
 
-        /* Missions Section */
-        .missions { padding: 100px 10%; border-top: 1px solid var(--line); }
-        .missions h2 { text-transform: uppercase; letter-spacing: 2px; font-size: 2.5rem; margin-bottom: 50px; }
-        .missions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 50px; }
-        .mission-card {
-            padding: 40px; border: 1px solid var(--line); background: var(--surface);
-            transition: border-color 0.3s ease, transform 0.3s ease;
-        }
-        .mission-card:hover { border-color: #444; transform: translateY(-8px); }
-        .mission-card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; }
-        .mission-card h3 { font-size: 1.8rem; margin-bottom: 15px; text-transform: uppercase; color: var(--accent); }
-        .mission-card .date { font-size: 0.8rem; color: #aaa; margin-bottom: 10px; letter-spacing: 1px; }
+        footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
 
-        /* Footer */
-        footer {
-            padding: 80px 10%; text-align: center; color: var(--text-dim);
-            font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
-            border-top: 1px solid var(--line);
-        }
-
-        /* Responsywność */
         @media (max-width: 1024px) {
-            .rocket-viewer-section { flex-direction: column; height: auto; padding-top: 50px; }
-            .info-panel { max-width: 100%; padding-right: 0; order: 2; margin-top: 50px; }
-            .model-container { height: 500px; width: 100%; order: 1; }
-            .hero h1 { font-size: 3rem; }
-            .missions-grid { grid-template-columns: 1fr; }
-            .manifesto h2 { font-size: 2rem; }
-            .hero { background-attachment: scroll; } /* Parallax might not work well on mobile */
+            .rocket-viewer-section { flex-direction: column; }
+            .model-container { height: 500px; }
         }
     </style>
 </head>
@@ -152,148 +123,85 @@
 
     <nav>
         <div class="logo">FERC<span>.</span></div>
-        <div class="menu-btn" style="color: var(--accent); font-weight: bold; border-bottom: 2px solid var(--accent); cursor: pointer;">MENU</div>
+        <div style="font-size: 0.7rem; letter-spacing: 2px; font-weight: 700; border-bottom: 2px solid var(--accent);">SYSTEM_ONLINE</div>
     </nav>
 
     <header class="hero">
-        <p class="fade-in">// PROJEKT: WERYFIKACJA HORYZONTU</p>
-        <h1 class="fade-in">Flat Earth<br>Rocket<br><span class="accent-text" id="typewriter-text">Corp</span></h1>
-        <div class="fade-in" style="margin-top: 40px;">
+        <p class="fade-in">// INŻYNIERIA LOTNICZA NOWEJ GENERACJI</p>
+        <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
+        <div class="btn-container fade-in">
             <a href="#explore" class="primary-btn">Eksploruj Technologię</a>
         </div>
     </header>
 
-    <section id="explore" class="rocket-viewer-section">
-        <div class="info-panel fade-in">
-            <h4 style="color: var(--accent); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px;">Flagowy Nośnik</h4>
-            <h2 style="font-size: 3.5rem; margin-bottom: 30px; text-transform: uppercase;">FERC-X1<br>"THE LEVELER"</h2>
-            <p class="description">
-                Jedyny na świecie system nośny zaprojektowany do celów niezależnej weryfikacji horyzontu. 
-                FERC-X1 to w pełni odzyskiwalna rakieta, która dostarcza surowe dane wideo bez żadnych zniekształceń obrazu.
-            </p>
-            
-            <div class="spec-item">
-                <span class="spec-label">Wysokość</span>
-                <span class="spec-value">14.2 m / 46 ft</span>
-            </div>
-            <div class="spec-item">
-                <span class="spec-label">Udźwig kamer</span>
-                <span class="spec-value">450 kg</span>
-            </div>
-            <div class="spec-item">
-                <span class="spec-label">Stabilizacja</span>
-                <span class="spec-value">Mech-Gyro v2</span>
-            </div>
-            <div class="spec-item" style="border:none">
-                <span class="spec-label">Optyka</span>
-                <span class="spec-value">0% Distortion Lens</span>
-            </div>
-        </div>
-
-        <div class="model-container fade-in">
-            <model-viewer 
-                src="rakieta.glb" 
-                alt="Model 3D FERC-X1"
-                auto-rotate 
-                rotation-speed="30deg"
-                camera-controls 
-                shadow-intensity="2"
-                environment-image="neutral"
-                exposure="1"
-                auto-rotate-delay="0"
-                interaction-prompt="none"
-                style="pointer-events: none;">
-            </model-viewer>
+    <section class="status-quo">
+        <div class="fade-in">
+            <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
         </div>
     </section>
 
-    <section class="manifesto">
-        <h2 class="fade-in">Prawda wymaga <span class="accent-text">wysokości</span>. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
+    <section id="explore" class="rocket-viewer-section">
+        <div class="info-panel fade-in">
+            <h4 style="color: var(--accent); letter-spacing: 3px; margin-bottom: 10px; font-size: 0.8rem;">TECHNICAL SPEC</h4>
+            <h2 style="font-size: 3rem; margin-bottom: 25px; text-transform: uppercase; font-weight: 900;">FERC-X1<br>The Leveler</h2>
+            
+            <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span>120,000 FT</span></div>
+            <div class="spec-item"><span class="spec-label">System Optyczny</span><span>Rectilinear 8K</span></div>
+            <div class="spec-item"><span class="spec-label">Stabilizacja</span><span>Mech-Gyro v2</span></div>
+            <div class="spec-item" style="border:none"><span class="spec-label">Status projektu</span><span style="color: var(--accent);">In Testing</span></div>
+        </div>
+
+        <div class="model-container">
+            <model-viewer 
+                src="rakieta.glb" 
+                auto-rotate 
+                rotation-speed="40deg"
+                shadow-intensity="2"
+                exposure="1.2"
+                auto-rotate-delay="0">
+            </model-viewer>
+        </div>
     </section>
 
     <section class="features">
         <div class="feature-card fade-in">
             <h3>01. Optyka</h3>
-            <p style="color: var(--text-dim);">Stosujemy wyłącznie obiektywy o stałej ogniskowej. Żadnych rybich oczu.</p>
+            <p>Brak efektu "Fish-eye". Stosujemy soczewki korygujące dystorsję, aby obraz horyzontu był w 100% autentyczny.</p>
         </div>
         <div class="feature-card fade-in">
-            <h3>02. Fizyka</h3>
-            <p style="color: var(--text-dim);">Klasyczne żyroskopy mechaniczne zapewniające niezależny pomiar pionu.</p>
+            <h3>02. Sensory</h3>
+            <p>Niezależne od GPS systemy pozycjonowania oparte na klasycznej mechanice bezwładnościowej.</p>
         </div>
         <div class="feature-card fade-in">
-            <h3>03. Transparentność</h3>
-            <p style="color: var(--text-dim);">Surowe dane przesyłane w czasie rzeczywistym do publicznej sieci serwerów.</p>
+            <h3>03. Dane</h3>
+            <p>Zaszyfrowany przesył RAW w czasie rzeczywistym. Brak post-produkcji, brak cenzury, tylko surowy plik.</p>
         </div>
     </section>
 
-    <section id="missions" class="missions">
-        <h2 class="fade-in">Upcoming Missions</h2>
-        <div class="missions-grid">
-            <div class="mission-card fade-in">
-                <p class="date">MARZEC 2026</p>
-                <h3>Mission: Edge One</h3>
-                <p>Pierwszy lot suborbitalny z zestawem kamer 360 stopni. Cel: Transmisja na żywo z wysokości 120km.</p>
-            </div>
-            <div class="mission-card fade-in">
-                <p class="date">CZERWIEC 2026</p>
-                <h3>Mission: True Vision</h3>
-                <p>Testowanie nowych laserowych żyroskopów mechanicznych w celu potwierdzenia stabilności poziomu.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="fade-in">
-        &copy; 2026 FLAT EARTH ROCKET CORPORATION. ALL RIGHTS RESERVED.
+    <footer>
+        &copy; 2026 FLAT EARTH ROCKET CORPORATION. BEYOND THE CURVE.
     </footer>
 
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Intersection Observer for fade-in animations
-        const faders = document.querySelectorAll('.fade-in');
-        const appearOptions = {
-            threshold: 0.3, // Element becomes visible when 30% of it is in viewport
-            rootMargin: "0px 0px -50px 0px" // Start earlier
-        };
-
-        const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
+        // Animacja pojawiania się przy przewijaniu
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (!entry.isIntersecting) {
-                    return;
-                } else {
+                if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    appearOnScroll.unobserve(entry.target);
                 }
             });
-        }, appearOptions);
+        }, { threshold: 0.1 });
 
-        faders.forEach(fader => {
-            appearOnScroll.observe(fader);
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Płynny scroll do przycisku (zabezpieczenie JS dla starszych przeglądarek)
+        document.querySelector('.primary-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            document.querySelector(targetId).scrollIntoView({
+                behavior: 'smooth'
+            });
         });
-
-        // Typewriter Effect for the main header
-        const typewriterTextElement = document.getElementById('typewriter-text');
-        const text = "Corp";
-        let i = 0;
-        let speed = 100; // milliseconds per character
-
-        function typeWriter() {
-            if (i < text.length) {
-                typewriterTextElement.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, speed);
-            }
-        }
-        // Start typewriter after a short delay for other animations to settle
-        setTimeout(typeWriter, 1500); 
     </script>
 
 </body>
