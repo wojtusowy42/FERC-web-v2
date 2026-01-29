@@ -118,15 +118,17 @@
         </div>
 
         <div class="model-container">
-            <model-viewer 
-                src="rakieta.glb" 
-                alt="Model 3D FERC-X1"
-                auto-rotate 
-                camera-controls 
-                shadow-intensity="2"
-                environment-image="neutral"
-                exposure="1"
-                auto-rotate-delay="0">
+<model-viewer 
+    src="rakieta.glb" 
+    alt="Model 3D FERC-X1"
+    auto-rotate 
+    rotation-speed="30deg"
+    auto-rotate-delay="0"
+    shadow-intensity="2"
+    environment-image="neutral"
+    exposure="1"
+    interaction-prompt="none"
+    style="pointer-events: none;"> </model-viewer>
             </model-viewer>
         </div>
     </section>
@@ -159,4 +161,5 @@
     </footer>
 
 </body>
+
 </html>
