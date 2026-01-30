@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>FERC | Flat Earth Rocket Corporation</title>
-    
+
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
-            --accent: #bfff00; 
+            --accent: #bfff00;
             --bg: #000000;
             --surface: #0a0a0a;
             --text: #ffffff;
@@ -20,7 +20,6 @@
 
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
         body::before {
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -53,8 +52,8 @@
         .logo span { color: var(--accent); }
 
         .nav-links { display: flex; gap: 40px; }
-        .nav-links a { 
-            text-decoration: none; color: white; font-size: 0.7rem; font-weight: 700; 
+        .nav-links a {
+            text-decoration: none; color: white; font-size: 0.7rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; cursor: pointer;
         }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
@@ -80,8 +79,7 @@
             position: relative; overflow: hidden;
         }
         .status-quo h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; max-width: 1000px; text-transform: uppercase; font-weight: 900; position: relative; z-index: 2; }
-        
-        /* FIX: ENGINEERING THE TRUTH */
+
         .status-quo::after {
             content: "ENGINEERING THE TRUTH";
             position: absolute; right: 0; bottom: 0;
@@ -103,12 +101,66 @@
         model-viewer { width: 100%; height: 100%; outline: none; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-        .card { background: var(--bg); padding: 80px 50px; transition: 0.4s; }
+        .card { background: var(--bg); padding: 40px 30px; transition: 0.4s; }
         .card:hover { background: #050505; }
-        .card h3 { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; margin-top: 10px; }
+        .card h3 { color: var(--accent); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; margin-top: 10px; }
 
-        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 1.5rem; margin: 20px 0; display: block; }
-        .btn-shop { background: var(--accent); color: black; border: none; padding: 15px 30px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 0.7rem; }
+        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 1.5rem; margin: 12px 0; display: block; }
+        .btn-shop { background: var(--accent); color: black; border: none; padding: 12px 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 0.7rem; border-radius: 6px; }
+
+        /* Product thumbnail specific */
+        .product-thumb {
+            height: 250px;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            perspective: 1200px;
+        }
+        .product-thumb img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: opacity 300ms ease, transform 400ms ease;
+            display: block;
+            user-select: none;
+            pointer-events: none;
+        }
+        .product-thumb .img-front, .product-thumb .img-back {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            display: block;
+            width: auto;
+            height: 100%;
+            max-height: 100%;
+            max-width: 100%;
+        }
+        .product-thumb .img-back { opacity: 0; transform: scale(0.98); }
+        .product-thumb:hover .img-front { opacity: 0; transform: scale(1.04); }
+        .product-thumb:hover .img-back { opacity: 1; transform: scale(1); }
+
+        /* product page layout */
+        .product-page {
+            padding: 120px 10% 100px;
+        }
+        .product-hero { display:flex; gap: 40px; align-items:center; }
+        .product-hero .big-image {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            height: 520px;
+            display:flex; align-items:center; justify-content:center; overflow:hidden;
+        }
+        .product-hero img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .product-info { flex: 1; padding: 20px; }
+        .back-link { background: transparent; border: 1px solid var(--line); color: var(--text-dim); padding: 8px 12px; cursor: pointer; border-radius: 6px; margin-bottom: 20px; }
 
         footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
 
@@ -116,6 +168,8 @@
             .nav-links { display: none; }
             .rocket-viewer-section { flex-direction: column; }
             .status-quo::after { font-size: 4rem; }
+            .product-hero { flex-direction: column; }
+            .product-hero .big-image { height: 360px; width: 100%; }
         }
     </style>
 </head>
@@ -134,6 +188,7 @@
         </div>
     </nav>
 
+    <!-- HOME -->
     <div id="page-home" class="page active">
         <header class="hero">
             <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
@@ -180,11 +235,12 @@
         </section>
     </div>
 
+    <!-- MISSIONS -->
     <div id="page-missions" class="page">
         <section style="padding: 180px 10% 100px;">
             <span class="mono">[STRATEGIC_OPERATIONS]</span>
             <h1 style="font-size: clamp(3rem, 10vw, 6rem); text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Operations</h1>
-            
+
             <div class="grid">
                 <div class="card fade-in">
                     <span class="mono">FLAGSHIP_PROJECT</span>
@@ -209,23 +265,96 @@
         </section>
     </div>
 
+    <!-- SHOP MAIN -->
     <div id="page-shop" class="page">
         <section style="padding: 180px 10% 100px;">
             <span class="mono">[COMMERCIAL_UNIT]</span>
             <h1 style="font-size: clamp(3rem, 10vw, 6rem); text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Gear</h1>
-            
+
             <div class="grid">
+                <!-- Bluza -->
                 <div class="card fade-in">
-                    <div style="height: 250px; background: #0a0a0a; border: 1px solid #1a1a1a; margin-bottom: 20px;"></div>
-                    <h3>"The Leveler" Hoodie</h3>
+                    <div class="product-thumb" role="button" tabindex="0" onclick="openProduct('bluza')" onkeydown="if(event.key === 'Enter') openProduct('bluza')">
+                        <!-- front/back stacked for smooth hover swap -->
+                        <img class="img-front" src="bluza_przod.png" alt="Beyond the Curve - przód" draggable="false">
+                        <img class="img-back" src="bluza_tyl.png" alt="Beyond the Curve - tył" draggable="false">
+                    </div>
+                    <h3>Beyond the Curve Hoodie</h3>
                     <span class="price">249 PLN</span>
-                    <button class="btn-shop">Buy Gear</button>
+                    <button class="btn-shop" onclick="openProduct('bluza')">Buy Gear</button>
                 </div>
+
+                <!-- Silnik -->
                 <div class="card fade-in">
-                    <div style="height: 250px; background: #0a0a0a; border: 1px solid #1a1a1a; margin-bottom: 20px;"></div>
+                    <div class="product-thumb" role="button" tabindex="0" onclick="openProduct('engine')" onkeydown="if(event.key === 'Enter') openProduct('engine')">
+                        <img class="img-front" src="g_motor.png" alt="G-Class Engine - front" draggable="false">
+                        <img class="img-back" src="g_motor2.png" alt="G-Class Engine - back" draggable="false">
+                    </div>
                     <h3>G-Class Engine Scale Model</h3>
                     <span class="price">599 PLN</span>
-                    <button class="btn-shop">Pre-order</button>
+                    <button class="btn-shop" onclick="openProduct('engine')">Pre-order</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PRODUCT: BLUZA -->
+    <div id="page-shop-bluza" class="page">
+        <section class="product-page">
+            <div style="max-width:1200px; margin: 0 auto;">
+                <button class="back-link" onclick="switchPage('shop')">← Powrót do sklepu</button>
+                <div class="product-hero fade-in">
+                    <div class="big-image">
+                        <img id="bluza-big" src="bluza_przod.png" alt="Beyond the Curve - produkt">
+                    </div>
+                    <div class="product-info">
+                        <span class="mono">[PRODUCT]</span>
+                        <h2 style="font-size:2.6rem; margin: 8px 0 16px;">Beyond the Curve Hoodie</h2>
+                        <div class="price" style="font-size:1.6rem;">249 PLN</div>
+                        <p style="color: var(--text-dim); margin-bottom: 20px;">Wysokiej jakości bawełniana bluza z haftem FERC. Dostępna w rozmiarach S–XXL. Produkt limitowany.</p>
+                        <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px;">
+                            <button class="btn-shop" onclick="addToCart('bluza')">Dodaj do koszyka</button>
+                            <button class="btn-shop" onclick="window.alert('Symulacja zakupu — tu zaintegrujesz checkout')">Kup teraz</button>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <strong style="color:var(--text-dim); font-size:0.85rem;">Widok:</strong>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <button class="back-link" onclick="document.getElementById('bluza-big').src='bluza_przod.png'">Przód</button>
+                                <button class="back-link" onclick="document.getElementById('bluza-big').src='bluza_tyl.png'">Tył</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- PRODUCT: ENGINE -->
+    <div id="page-shop-engine" class="page">
+        <section class="product-page">
+            <div style="max-width:1200px; margin: 0 auto;">
+                <button class="back-link" onclick="switchPage('shop')">← Powrót do sklepu</button>
+                <div class="product-hero fade-in">
+                    <div class="big-image">
+                        <img id="engine-big" src="g_motor.png" alt="G-Class Engine - produkt">
+                    </div>
+                    <div class="product-info">
+                        <span class="mono">[PRODUCT]</span>
+                        <h2 style="font-size:2.6rem; margin: 8px 0 16px;">G-Class Engine Scale Model</h2>
+                        <div class="price" style="font-size:1.6rem;">599 PLN</div>
+                        <p style="color: var(--text-dim); margin-bottom: 20px;">Model silnika w skali, pre-order. Solidny detal, idealny do wystawy.</p>
+                        <div style="display:flex; gap:12px; align-items:center; margin-bottom:18px;">
+                            <button class="btn-shop" onclick="addToCart('engine')">Dodaj do koszyka</button>
+                            <button class="btn-shop" onclick="window.alert('Symulacja zakupu — tu zaintegrujesz checkout')">Kup teraz</button>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <strong style="color:var(--text-dim); font-size:0.85rem;">Widok:</strong>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <button class="back-link" onclick="document.getElementById('engine-big').src='g_motor.png'">Przód</button>
+                                <button class="back-link" onclick="document.getElementById('engine-big').src='g_motor2.png'">Tył</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -236,15 +365,36 @@
     </footer>
 
     <script>
+        // Page switching (rozszerzone o product pages)
         function switchPage(pageName) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+            // map for simple nav highlighting:
+            if (pageName === 'home' || pageName === 'missions' || pageName === 'shop') {
+                const link = document.getElementById('link-' + pageName);
+                if (link) link.classList.add('active');
+            }
             document.getElementById('page-' + pageName).classList.add('active');
-            document.getElementById('link-' + pageName).classList.add('active');
             window.scrollTo(0, 0);
             refreshAnimations();
         }
 
+        // Open product sub-pages (wszystko w jednym pliku)
+        function openProduct(key) {
+            if (key === 'bluza') {
+                switchPage('shop-bluza');
+            } else if (key === 'engine') {
+                switchPage('shop-engine');
+            }
+        }
+
+        // fake add to cart (placeholder)
+        function addToCart(item) {
+            window.alert('Dodano do koszyka: ' + (item === 'bluza' ? 'Beyond the Curve Hoodie' : 'G-Class Engine Scale Model'));
+        }
+
+        // Animacje licznika i fade-in
         const animateStats = (el) => {
             const target = +el.getAttribute('data-target');
             let count = 0;
@@ -276,17 +426,30 @@
 
         refreshAnimations();
 
+        // Countdown (aktualizuj datę jeśli chcesz)
         function updateCountdown() {
-            const targetDate = new Date(2026, 5, 21).getTime(); // Ustawione na początek lata
+            const targetDate = new Date(2026, 5, 21).getTime(); // 21 czerwca 2026
             const now = new Date().getTime();
             const d = targetDate - now;
-            const days = Math.floor(d / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            const hours = Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            const mins = Math.floor((d % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            const secs = Math.floor((d % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            const days = Math.max(0, Math.floor(d / (1000 * 60 * 60 * 24))).toString().padStart(2, '0');
+            const hours = Math.max(0, Math.floor((d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).toString().padStart(2, '0');
+            const mins = Math.max(0, Math.floor((d % (1000 * 60 * 60)) / (1000 * 60))).toString().padStart(2, '0');
+            const secs = Math.max(0, Math.floor((d % (1000 * 60)) / 1000)).toString().padStart(2, '0');
             document.getElementById("countdown").innerHTML = `T-${days}:${hours}:${mins}:${secs}`;
         }
         setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Accessibility: allow Escape to go back to shop from product pages
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // jeśli jesteśmy na stronie produktu -> wróć do shop
+                if (document.getElementById('page-shop-bluza').classList.contains('active') ||
+                    document.getElementById('page-shop-engine').classList.contains('active')) {
+                    switchPage('shop');
+                }
+            }
+        });
     </script>
 
 </body>
