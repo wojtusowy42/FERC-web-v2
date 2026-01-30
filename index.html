@@ -43,6 +43,7 @@
         }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+        /* Nawigacja */
         nav {
             position: fixed; top: 0; width: 100%; padding: 25px 50px;
             display: flex; justify-content: space-between; align-items: center;
@@ -67,7 +68,14 @@
         .timer-label { font-size: 0.5rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; }
         .timer-value { font-size: 1rem; font-weight: 900; font-variant-numeric: tabular-nums; }
 
-        /* ENGINEERING THE TRUTH FIX */
+        /* Sekcje */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 0 10%; position: relative;
+            background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%);
+        }
+        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; }
+
         .status-quo {
             padding: 150px 10%; background: var(--surface);
             border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -81,11 +89,18 @@
             pointer-events: none; z-index: 1; transform: translateY(20%);
         }
 
-        /* GRID & CARDS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-        .card { background: var(--bg); padding: 40px; transition: 0.4s; position: relative; }
+        .rocket-viewer-section { min-height: 100vh; display: flex; align-items: center; padding: 80px 10%; position: relative; }
+        .info-panel { flex: 1; z-index: 10; padding-right: 40px; }
+        .spec-item { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase; }
+        
+        .model-container { flex: 1.5; height: 85vh; position: relative; }
+        model-viewer { width: 100%; height: 100%; outline: none; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+        .card { background: var(--bg); padding: 60px 40px; transition: 0.4s; }
         .card:hover { background: #050505; }
 
+        /* Zdjęcia w sklepie */
         .product-image-container { 
             position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; cursor: pointer; border: 1px solid var(--line);
         }
@@ -94,31 +109,26 @@
         .product-image-container:hover .product-image.front { opacity: 0; }
         .product-image-container:hover .product-image.back { opacity: 1; }
 
-        /* PRODUCT PAGE STYLES */
-        .product-layout { display: flex; gap: 80px; padding: 180px 10% 100px; align-items: flex-start; }
-        .product-gallery { flex: 1; display: flex; flex-direction: column; gap: 20px; }
-        .main-img-wrap { border: 1px solid var(--line); width: 100%; }
-        .main-img-wrap img { width: 100%; display: block; }
+        /* Produkt Page */
+        .product-layout { display: flex; gap: 60px; padding: 180px 10% 100px; }
+        .product-gallery { flex: 1; }
+        .main-img-wrap { border: 1px solid var(--line); margin-bottom: 20px; }
+        .main-img-wrap img { width: 100%; }
         .gallery-thumbs { display: flex; gap: 10px; }
-        .thumb { width: 80px; height: 80px; border: 1px solid var(--line); cursor: pointer; opacity: 0.5; transition: 0.3s; }
-        .thumb:hover, .thumb.active { opacity: 1; border-color: var(--accent); }
-
+        .thumb { width: 80px; height: 80px; border: 1px solid var(--line); cursor: pointer; opacity: 0.4; }
+        .thumb.active { opacity: 1; border-color: var(--accent); }
         .product-info { flex: 1; }
-        .size-picker { display: flex; gap: 10px; margin: 30px 0; }
-        .size-btn { 
-            width: 50px; height: 50px; border: 1px solid var(--line); background: transparent; 
-            color: white; font-weight: 900; cursor: pointer; transition: 0.3s;
-        }
+
+        .size-picker { display: flex; gap: 10px; margin: 25px 0; }
+        .size-btn { width: 45px; height: 45px; border: 1px solid var(--line); background: transparent; color: white; cursor: pointer; font-weight: 900; transition: 0.3s; }
         .size-btn:hover, .size-btn.active { border-color: var(--accent); color: var(--accent); }
-        
-        .btn-large { 
-            background: var(--accent); color: black; border: none; padding: 20px 40px; 
-            font-weight: 900; text-transform: uppercase; width: 100%; cursor: pointer; 
-        }
 
         .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 2rem; margin: 20px 0; display: block; }
+        .btn-large { background: var(--accent); color: black; border: none; padding: 20px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
 
-        @media (max-width: 900px) { .product-layout { flex-direction: column; } }
+        footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
+
+        @media (max-width: 1024px) { .rocket-viewer-section, .product-layout { flex-direction: column; } .nav-links { display: none; } }
     </style>
 </head>
 <body>
@@ -138,29 +148,71 @@
 
     <div id="page-home" class="page active">
         <header class="hero">
+            <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
             <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
         </header>
+
         <section class="status-quo">
             <div class="fade-in">
                 <span class="mono">[MANIFESTO_v1.0]</span>
-                <h2>Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę.</h2>
+                <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
             </div>
         </section>
-        </div>
+
+        <section class="rocket-viewer-section">
+            <div class="info-panel fade-in">
+                <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
+                <h2 style="font-size: 3rem; margin: 15px 0; text-transform: uppercase; font-weight: 900;">The Leveler</h2>
+                <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span><span class="stat-count" data-target="250000">0</span> FT</span></div>
+                <div class="spec-item"><span class="spec-label">Napęd</span><span>Solid State G-Class</span></div>
+                <div class="spec-item" style="border:none"><span class="spec-label">Status</span><span style="color: var(--accent);">Ready</span></div>
+            </div>
+            <div class="model-container">
+                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" auto-rotate-delay="0"></model-viewer>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card fade-in">
+                <span class="mono">TECH_01</span>
+                <h3>Silniki Klasy G</h3>
+                <p>Nasz autorski napęd zaprojektowany do stabilnego lotu w górnych warstwach.</p>
+            </div>
+            <div class="card fade-in">
+                <span class="mono">TECH_02</span>
+                <h3>Sensory RAW</h3>
+                <p>Niezależna mechanika bezwładnościowa bez korygowania danych.</p>
+            </div>
+        </section>
+    </div>
+
+    <div id="page-missions" class="page">
+        <section style="padding: 180px 10% 100px;">
+            <span class="mono">[LOGS]</span>
+            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Operations</h1>
+            <div class="grid">
+                <div class="card fade-in">
+                    <span class="mono">FLAGSHIP</span>
+                    <h3>Rocket Simon</h3>
+                    <p>Największa jednostka w historii. Start planowany na lato 2026.</p>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <div id="page-shop" class="page">
         <section style="padding: 180px 10% 100px;">
-            <span class="mono">[COMMERCIAL_UNIT]</span>
-            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Gear</h1>
+            <span class="mono">[GEAR]</span>
+            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Shop</h1>
             <div class="grid">
-                <div class="card fade-in" onclick="switchPage('product')">
+                <div class="card fade-in" onclick="switchPage('product')" style="cursor:pointer">
                     <div class="product-image-container">
                         <img src="bluza_front.png" class="product-image front">
                         <img src="bluza_tyl.png" class="product-image back">
                     </div>
                     <h3>Beyond the Curve Hoodie</h3>
                     <span class="price">249 PLN</span>
-                    <button class="btn-shop">View Details</button>
+                    <button class="btn-shop" style="background:var(--accent); border:none; padding:10px; width:100%; font-weight:900;">DETALE</button>
                 </div>
             </div>
         </section>
@@ -169,69 +221,53 @@
     <div id="page-product" class="page">
         <div class="product-layout">
             <div class="product-gallery">
-                <div class="main-img-wrap">
-                    <img id="mainProductImg" src="bluza_front.png">
-                </div>
+                <div class="main-img-wrap"><img id="pImg" src="bluza_front.png"></div>
                 <div class="gallery-thumbs">
-                    <img src="bluza_front.png" class="thumb active" onclick="changeImg(this, 'bluza_front.png')">
-                    <img src="bluza_tyl.png" class="thumb" onclick="changeImg(this, 'bluza_tyl.png')">
+                    <img src="bluza_front.png" class="thumb active" onclick="document.getElementById('pImg').src='bluza_front.png'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
+                    <img src="bluza_tyl.png" class="thumb" onclick="document.getElementById('pImg').src='bluza_tyl.png'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
                 </div>
             </div>
             <div class="product-info">
-                <span class="mono">[ITEM_ID: BEYOND_CURVE_01]</span>
-                <h1 style="font-size: 3rem; text-transform: uppercase; font-weight: 900;">Beyond the Curve Hoodie</h1>
-                <p style="color: var(--text-dim); margin-top: 20px;">
-                    Limitowana edycja bluzy typu Baggy. Wykonana z ultra-ciężkiej bawełny (450g). 
-                    Minimalistyczny branding FERC z przodu, techniczny schemat trajektorii "Simon" na plecach. 
-                    Brak szwów bocznych dla lepszego dopasowania.
-                </p>
+                <span class="mono">LIMITED_EDITION</span>
+                <h1 style="font-size: 3rem; font-weight: 900; text-transform: uppercase;">Beyond the Curve</h1>
+                <p style="color:var(--text-dim); margin-top:20px;">Oversize Baggy Hoodie. Ciężka bawełna 450g. Projekt trajektorii Rocket Simon na plecach.</p>
                 <span class="price">249.00 PLN</span>
-                
-                <span class="mono" style="margin-top: 40px;">SELECT_SIZE</span>
                 <div class="size-picker">
-                    <button class="size-btn">S</button>
-                    <button class="size-btn active">M</button>
-                    <button class="size-btn">L</button>
-                    <button class="size-btn">XL</button>
+                    <button class="size-btn">S</button><button class="size-btn active">M</button><button class="size-btn">L</button><button class="size-btn">XL</button>
                 </div>
-                
-                <button class="btn-large" onclick="alert('System płatności w fazie beta. Prawda nie ma ceny.')">Add to Cart</button>
-                <p class="mono" style="margin-top: 20px; font-size: 0.5rem; opacity: 0.5;">* Ships worldwide. Flat Earth shipping rates apply.</p>
+                <button class="btn-large">Dodaj do koszyka</button>
             </div>
         </div>
     </div>
 
+    <footer>&copy; 2026 FLAT EARTH ROCKET CORPORATION. BEYOND THE CURVE.</footer>
+
     <script>
-        function switchPage(pageName) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        function switchPage(p) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            
-            const targetPage = document.getElementById('page-' + pageName);
-            if(targetPage) targetPage.classList.add('active');
-            
-            const targetLink = document.getElementById('link-' + pageName);
-            if(targetLink) targetLink.classList.add('active');
-            
-            window.scrollTo(0, 0);
+            document.getElementById('page-' + p).classList.add('active');
+            if(document.getElementById('link-' + p)) document.getElementById('link-' + p).classList.add('active');
+            window.scrollTo(0,0);
             refreshAnimations();
         }
 
-        function changeImg(el, src) {
-            document.getElementById('mainProductImg').src = src;
-            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-        }
-
-        // Reszta skryptów (countdown, animations) zostaje bez zmian
         function refreshAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
-                });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            const obs = new IntersectionObserver((es) => {
+                es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+            }, {threshold: 0.1});
+            document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
         }
         refreshAnimations();
+
+        setInterval(() => {
+            const d = new Date(2026, 5, 21) - new Date();
+            const days = Math.floor(d / 86400000).toString().padStart(2,'0');
+            const hrs = Math.floor((d % 86400000) / 3600000).toString().padStart(2,'0');
+            const mins = Math.floor((d % 3600000) / 60000).toString().padStart(2,'0');
+            const secs = Math.floor((d % 60000) / 1000).toString().padStart(2,'0');
+            document.getElementById("countdown").innerHTML = `T-${days}:${hrs}:${mins}:${secs}`;
+        }, 1000);
     </script>
 </body>
 </html>
