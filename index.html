@@ -7,7 +7,6 @@
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
@@ -22,16 +21,28 @@
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
         body::before {
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
             opacity: 0.05; pointer-events: none; z-index: 9999;
         }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
         .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; display: block; margin-bottom: 5px; }
-        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+        .page { display: none; min-height: 100vh; }
+        .page.active { display: block; }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1);
+        }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
         /* Nawigacja */
         nav {
             position: fixed; top: 0; width: 100%; padding: 25px 50px;
@@ -41,18 +52,30 @@
         }
         .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; cursor: pointer; }
         .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 40px; }
-        .nav-links a { text-decoration: none; color: white; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
-        .nav-links a.active { color: var(--accent); }
 
-        .timer-box { border: 1px solid #333; padding: 10px 20px; background: rgba(10, 10, 10, 0.8); border-radius: 4px; text-align: right; }
-        .timer-label { font-size: 0.5rem; color: var(--accent); font-weight: 700; letter-spacing: 2px; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a { 
+            text-decoration: none; color: white; font-size: 0.7rem; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; cursor: pointer;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .timer-box {
+            border: 1px solid #333; padding: 10px 20px;
+            display: flex; flex-direction: column; align-items: flex-end;
+            background: rgba(10, 10, 10, 0.8); border-radius: 4px;
+        }
+        .timer-label { font-size: 0.5rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; }
         .timer-value { font-size: 1rem; font-weight: 900; font-variant-numeric: tabular-nums; }
 
-        .page { display: none; min-height: 100vh; }
-        .page.active { display: block; }
+        /* Sekcje */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 0 10%; position: relative;
+            background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%);
+        }
+        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; }
 
-        /* Sekcja Manifesto z napisem w tle */
         .status-quo {
             padding: 150px 10%; background: var(--surface);
             border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -66,34 +89,46 @@
             pointer-events: none; z-index: 1; transform: translateY(20%);
         }
 
-        /* Sklep i Bluzy */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-        .card { background: var(--bg); padding: 40px; transition: 0.4s; position: relative; }
+        .rocket-viewer-section { min-height: 100vh; display: flex; align-items: center; padding: 80px 10%; position: relative; }
+        .info-panel { flex: 1; z-index: 10; padding-right: 40px; }
+        .spec-item { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase; }
         
+        .model-container { flex: 1.5; height: 85vh; position: relative; }
+        model-viewer { width: 100%; height: 100%; outline: none; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+        .card { background: var(--bg); padding: 60px 40px; transition: 0.4s; }
+        .card:hover { background: #050505; }
+
+        /* Zdjęcia w sklepie */
         .product-image-container { 
-            position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; cursor: pointer; margin-bottom: 20px;
+            position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; cursor: pointer; border: 1px solid var(--line);
         }
         .product-image { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease; }
         .product-image.back { position: absolute; top: 0; left: 0; opacity: 0; }
         .product-image-container:hover .product-image.front { opacity: 0; }
         .product-image-container:hover .product-image.back { opacity: 1; }
 
-        /* Produkt Detale */
+        /* Produkt Page */
         .product-layout { display: flex; gap: 60px; padding: 180px 10% 100px; }
         .product-gallery { flex: 1; }
         .main-img-wrap { border: 1px solid var(--line); margin-bottom: 20px; }
-        .main-img-wrap img { width: 100%; display: block; }
+        .main-img-wrap img { width: 100%; }
         .gallery-thumbs { display: flex; gap: 10px; }
-        .thumb { width: 80px; height: 80px; border: 1px solid var(--line); cursor: pointer; opacity: 0.5; transition: 0.3s; }
-        .thumb.active, .thumb:hover { opacity: 1; border-color: var(--accent); }
+        .thumb { width: 80px; height: 80px; border: 1px solid var(--line); cursor: pointer; opacity: 0.4; }
+        .thumb.active { opacity: 1; border-color: var(--accent); }
+        .product-info { flex: 1; }
+
+        .size-picker { display: flex; gap: 10px; margin: 25px 0; }
+        .size-btn { width: 45px; height: 45px; border: 1px solid var(--line); background: transparent; color: white; cursor: pointer; font-weight: 900; transition: 0.3s; }
+        .size-btn:hover, .size-btn.active { border-color: var(--accent); color: var(--accent); }
 
         .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 2rem; margin: 20px 0; display: block; }
         .btn-large { background: var(--accent); color: black; border: none; padding: 20px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; }
-        
-        .fade-in { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1); }
-        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
         footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
+
+        @media (max-width: 1024px) { .rocket-viewer-section, .product-layout { flex-direction: column; } .nav-links { display: none; } }
     </style>
 </head>
 <body>
@@ -112,9 +147,9 @@
     </nav>
 
     <div id="page-home" class="page active">
-        <header style="height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 10%;">
+        <header class="hero">
             <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
-            <h1 class="fade-in" style="font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; text-transform: uppercase; line-height: 0.85;">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
+            <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
         </header>
 
         <section class="status-quo">
@@ -123,54 +158,84 @@
                 <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
             </div>
         </section>
-        
-        <section style="min-height: 100vh; display: flex; align-items: center; padding: 80px 10%;">
-            <div style="flex: 1;" class="fade-in">
+
+        <section class="rocket-viewer-section">
+            <div class="info-panel fade-in">
                 <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
-                <h2 style="font-size: 3rem; font-weight: 900; margin-bottom: 20px;">THE LEVELER</h2>
-                <p style="color: var(--text-dim);">Pułap: 250,000 FT<br>Status: Ready</p>
+                <h2 style="font-size: 3rem; margin: 15px 0; text-transform: uppercase; font-weight: 900;">The Leveler</h2>
+                <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span><span class="stat-count" data-target="250000">0</span> FT</span></div>
+                <div class="spec-item"><span class="spec-label">Napęd</span><span>Solid State G-Class</span></div>
+                <div class="spec-item" style="border:none"><span class="spec-label">Status</span><span style="color: var(--accent);">Ready</span></div>
             </div>
-            <div style="flex: 1.5; height: 80vh;">
-                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" style="width: 100%; height: 100%;"></model-viewer>
+            <div class="model-container">
+                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" auto-rotate-delay="0"></model-viewer>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card fade-in">
+                <span class="mono">TECH_01</span>
+                <h3>Silniki Klasy G</h3>
+                <p>Nasz autorski napęd zaprojektowany do stabilnego lotu w górnych warstwach.</p>
+            </div>
+            <div class="card fade-in">
+                <span class="mono">TECH_02</span>
+                <h3>Sensory RAW</h3>
+                <p>Niezależna mechanika bezwładnościowa bez korygowania danych.</p>
+            </div>
+        </section>
+    </div>
+
+    <div id="page-missions" class="page">
+        <section style="padding: 180px 10% 100px;">
+            <span class="mono">[LOGS]</span>
+            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Operations</h1>
+            <div class="grid">
+                <div class="card fade-in">
+                    <span class="mono">FLAGSHIP</span>
+                    <h3>Rocket Simon</h3>
+                    <p>Największa jednostka w historii. Start planowany na lato 2026.</p>
+                </div>
             </div>
         </section>
     </div>
 
     <div id="page-shop" class="page">
         <section style="padding: 180px 10% 100px;">
-            <span class="mono">[COMMERCIAL_UNIT]</span>
-            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Gear</h1>
+            <span class="mono">[GEAR]</span>
+            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Shop</h1>
             <div class="grid">
-                <div class="card fade-in" onclick="openProduct('bluza')" style="cursor:pointer">
+                <div class="card fade-in" onclick="switchPage('product')" style="cursor:pointer">
                     <div class="product-image-container">
-                        <img src="bluza_front.png" class="product-image front" alt="Bluza Przód">
-                        <img src="bluza_tyl.png" class="product-image back" alt="Bluza Tył">
+                        <img src="bluza_front.png" class="product-image front">
+                        <img src="bluza_tyl.png" class="product-image back">
                     </div>
                     <h3>Beyond the Curve Hoodie</h3>
                     <span class="price">249 PLN</span>
+                    <button class="btn-shop" style="background:var(--accent); border:none; padding:10px; width:100%; font-weight:900;">DETALE</button>
                 </div>
             </div>
         </section>
     </div>
 
-    <div id="page-shop-bluza" class="page">
+    <div id="page-product" class="page">
         <div class="product-layout">
             <div class="product-gallery">
-                <button onclick="switchPage('shop')" style="background:none; border:none; color:var(--accent); cursor:pointer; margin-bottom:20px; font-weight:bold;">← BACK TO SHOP</button>
-                <div class="main-img-wrap">
-                    <img id="mainProductImg" src="bluza_front.png">
-                </div>
+                <div class="main-img-wrap"><img id="pImg" src="bluza_front.png"></div>
                 <div class="gallery-thumbs">
-                    <img src="bluza_front.png" class="thumb active" onclick="updateGallery(this, 'bluza_front.png')">
-                    <img src="bluza_tyl.png" class="thumb" onclick="updateGallery(this, 'bluza_tyl.png')">
+                    <img src="bluza_front.png" class="thumb active" onclick="document.getElementById('pImg').src='bluza_front.png'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
+                    <img src="bluza_tyl.png" class="thumb" onclick="document.getElementById('pImg').src='bluza_tyl.png'; document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active')); this.classList.add('active')">
                 </div>
             </div>
             <div class="product-info">
                 <span class="mono">LIMITED_EDITION</span>
-                <h1 style="font-size: 3.5rem; font-weight: 900; text-transform: uppercase;">Beyond the Curve</h1>
+                <h1 style="font-size: 3rem; font-weight: 900; text-transform: uppercase;">Beyond the Curve</h1>
                 <p style="color:var(--text-dim); margin-top:20px;">Oversize Baggy Hoodie. Ciężka bawełna 450g. Projekt trajektorii Rocket Simon na plecach.</p>
                 <span class="price">249.00 PLN</span>
-                <button class="btn-large" onclick="alert('Added to cart')">Add to Cart</button>
+                <div class="size-picker">
+                    <button class="size-btn">S</button><button class="size-btn active">M</button><button class="size-btn">L</button><button class="size-btn">XL</button>
+                </div>
+                <button class="btn-large">Dodaj do koszyka</button>
             </div>
         </div>
     </div>
@@ -187,14 +252,6 @@
             refreshAnimations();
         }
 
-        function openProduct(key) { switchPage('shop-' + key); }
-
-        function updateGallery(el, src) {
-            document.getElementById('mainProductImg').src = src;
-            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-        }
-
         function refreshAnimations() {
             const obs = new IntersectionObserver((es) => {
                 es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
@@ -203,7 +260,6 @@
         }
         refreshAnimations();
 
-        // Countdown
         setInterval(() => {
             const d = new Date(2026, 5, 21) - new Date();
             const days = Math.floor(d / 86400000).toString().padStart(2,'0');
