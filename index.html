@@ -7,6 +7,7 @@
 
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -20,68 +21,74 @@
 
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.04; pointer-events: none; z-index: 9999;
+        }
         body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
-        .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; }
+        .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; display: block; margin-bottom: 5px; }
         
         /* NAVIGATION */
-        nav { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; cursor: pointer; }
+        nav { position: fixed; top: 0; width: 100%; padding: 22px 46px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .logo { font-weight: 900; font-size: 1.15rem; letter-spacing: 2px; cursor: pointer; }
         .logo span { color: var(--accent); }
         .nav-links { display:flex; gap: 30px; }
-        .nav-links a { text-decoration:none; color: #ddd; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; cursor:pointer; transition: 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .nav-links a { text-decoration:none; color: #ddd; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; cursor:pointer; }
+        .nav-links a.active, .nav-links a:hover { color: var(--accent); }
 
-        /* CART ICON */
-        .cart-trigger { position: relative; cursor: pointer; background: none; border: none; color: white; display: flex; align-items: center; gap: 8px; }
-        #cart-count { background: var(--accent); color: black; font-size: 0.6rem; font-weight: 900; padding: 2px 6px; border-radius: 10px; position: absolute; top: -10px; right: -10px; }
+        .cart-trigger { background: none; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; position: relative; }
+        #cart-count { background: var(--accent); color: black; position: absolute; top: -8px; right: -8px; font-size: 0.7rem; font-weight: 900; padding: 2px 6px; border-radius: 50%; }
 
-        /* PAGES */
-        .page { display: none; min-height: 100vh; padding-top: 100px; }
+        /* TIMER */
+        .timer-box { border: 1px solid rgba(255,255,255,0.03); padding:8px 14px; display:flex; flex-direction:column; align-items:flex-end; background: rgba(10,10,10,0.6); border-radius:6px; }
+        .timer-label { font-size: 0.55rem; letter-spacing: 2px; color: var(--accent); font-weight:700; }
+        .timer-value { font-size: 0.95rem; font-weight:900; font-variant-numeric: tabular-nums; }
+
+        /* LAYOUT ELEMENTS */
+        .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.2,0.6,0.2,1); }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-        /* HERO & GRID */
-        .hero { height: 80vh; display:flex; flex-direction:column; justify-content:center; padding: 0 10%; }
-        .hero h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight:900; line-height:0.9; }
-        
-        .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px 10%; }
-        .card { background: var(--surface); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); transition: 0.4s; text-align: center; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-        
-        .product-thumb { height: 250px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; }
-        .product-thumb img { max-height: 100%; transition: 0.4s; }
-        
-        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 1.2rem; margin: 15px 0; display: block; }
-        .btn { background: var(--accent); color: black; border: none; padding: 12px 24px; font-weight: 900; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: 0.3s; width: 100%; }
-        .btn:hover { background: white; }
-        .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; margin-top: 10px; }
+        .hero { height: 100vh; display:flex; flex-direction:column; justify-content:center; padding: 0 10%; background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%); }
+        .hero h1 { font-size: clamp(3rem, 12vw, 7.5rem); font-weight:900; line-height:0.9; letter-spacing:-2px; }
 
-        /* PRODUCT DETAIL PAGE */
-        .product-detail { display: flex; gap: 60px; padding: 60px 10%; align-items: center; }
-        .detail-img { flex: 1; background: var(--surface); border-radius: 20px; padding: 40px; display: flex; justify-content: center; }
-        .detail-img img { max-width: 100%; height: auto; }
-        .detail-info { flex: 1; }
+        .status-quo { padding: 120px 10%; background: var(--surface); border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .status-quo h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); color: var(--text-dim); font-weight:900; }
+
+        .rocket-viewer-section { min-height: 80vh; display:flex; align-items:center; padding: 60px 10%; }
+        .model-container { flex:1.2; height: 70vh; position:relative; }
+        model-viewer { width:100%; height:100%; }
+
+        /* SHOP ELEMENTS */
+        .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; padding: 40px 10%; }
+        .card { background: transparent; padding: 28px 20px; transition:0.3s; border-radius:8px; display:flex; flex-direction:column; align-items:center; text-align:center; border: 1px solid transparent; }
+        .card:hover { border-color: rgba(191,255,0,0.2); background: rgba(255,255,255,0.01); }
+        .product-thumb { height: 320px; margin-bottom: 10px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow: hidden; }
+        .product-thumb img { height: 100%; transition: 0.4s; }
+        .product-thumb:hover img { transform: scale(1.05); }
+
+        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size:1.25rem; margin:8px 0; }
+        .btn-shop { background: var(--accent); color: #000; border:none; padding:12px 20px; font-weight:900; text-transform:uppercase; letter-spacing:1px; border-radius:6px; cursor:pointer; width: 100%; transition: 0.3s; }
+        .btn-shop:hover { background: white; }
+
+        /* CHARTS */
+        .chart-panel { margin-top:18px; background: rgba(255,255,255,0.02); border-radius:10px; padding:18px; width: 100%; }
+        .chart-row { display:flex; gap:16px; height: 300px; }
+        .chart-large { flex:2; position:relative; min-width: 0; }
+        .chart-small { flex:1; position:relative; min-width: 0; }
 
         /* CART DRAWER */
-        #cart-drawer { position: fixed; right: -400px; top: 0; width: 400px; height: 100vh; background: var(--surface); z-index: 2000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); padding: 40px; border-left: 1px solid var(--accent); box-shadow: -20px 0 40px rgba(0,0,0,0.5); }
+        #cart-drawer { position: fixed; right: -400px; top: 0; width: 400px; height: 100vh; background: var(--surface); z-index: 2000; transition: 0.4s; padding: 40px; border-left: 1px solid var(--accent); }
         #cart-drawer.open { right: 0; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .close-cart { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1.5rem; }
-        .cart-items { max-height: 60vh; overflow-y: auto; margin-bottom: 20px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .cart-item-info h4 { font-size: 0.9rem; }
-        .remove-item { background: none; border: none; color: #ff4444; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; }
-        .cart-total { border-top: 2px solid var(--accent); padding-top: 20px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; z-index:1500; }
+        .overlay.active { display:block; }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 1500; }
-        .overlay.active { display: block; }
-
-        footer { padding: 60px 10%; text-align: center; color: var(--text-dim); font-size: 0.7rem; border-top: 1px solid rgba(255,255,255,0.05); }
-
-        @media (max-width: 768px) {
-            .product-detail { flex-direction: column; }
-            #cart-drawer { width: 100%; right: -100%; }
-        }
+        footer { padding: 50px 10%; border-top:1px solid rgba(255,255,255,0.03); color:var(--text-dim); text-align:center; }
     </style>
 </head>
 <body>
@@ -89,188 +96,206 @@
     <nav>
         <div class="logo" onclick="switchPage('home')">FERC<span>.</span></div>
         <div class="nav-links">
-            <a onclick="switchPage('home')" id="link-home" class="active">Start</a>
-            <a onclick="switchPage('shop')" id="link-shop">Sklep</a>
+            <a onclick="switchPage('home')" id="link-home" class="active">The Leveler</a>
+            <a onclick="switchPage('missions')" id="link-missions">Missions</a>
+            <a onclick="switchPage('shop')" id="link-shop">Shop</a>
         </div>
-        <button class="cart-trigger" onclick="toggleCart()">
-            <span class="mono">KOSZYK</span>
-            <div id="cart-count">0</div>
-        </button>
+        <div style="display:flex; gap: 20px; align-items:center;">
+            <button class="cart-trigger" onclick="toggleCart()">
+                🛒 <span id="cart-count">0</span>
+            </button>
+            <div class="timer-box">
+                <span class="timer-label">UPCOMING LAUNCH</span>
+                <span id="countdown" class="timer-value">T-00:00:00:00</span>
+            </div>
+        </div>
     </nav>
 
-    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
-
+    <div id="overlay" class="overlay" onclick="toggleCart()"></div>
     <div id="cart-drawer">
-        <div class="cart-header">
-            <h2 class="mono" style="font-size: 1.2rem;">Twój Koszyk</h2>
-            <button class="close-cart" onclick="toggleCart()">&times;</button>
-        </div>
-        <div id="cart-items" class="cart-items">
-            </div>
-        <div class="cart-total">
+        <h2 class="mono" style="margin-bottom: 20px;">Twój Koszyk</h2>
+        <div id="cart-content"></div>
+        <div style="margin-top: 20px; border-top: 1px solid var(--accent); padding-top: 20px;">
             <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
                 <span>Suma:</span>
-                <span id="total-price" class="price">0 PLN</span>
+                <span id="cart-total" class="price">0 PLN</span>
             </div>
-            <button class="btn" onclick="checkout()">Kup Teraz</button>
+            <button class="btn-shop" onclick="alert('Checkout integration here')">Kup Teraz</button>
+            <button class="btn-shop" style="background:none; color:white; border:1px solid #333; margin-top:10px;" onclick="toggleCart()">Zamknij</button>
         </div>
     </div>
 
     <div id="page-home" class="page active">
         <header class="hero">
-            <span class="mono">[FERC_CORE_v2]</span>
-            <h1>Leveling the<br><span style="color: var(--accent);">World</span></h1>
-            <p style="color: var(--text-dim); max-width: 500px; margin-top: 20px;">Oficjalny dystrybutor rozwiązań kwestionujących krzywiznę. Technologia, gear, misja.</p>
-            <div style="margin-top: 30px;">
-                <button class="btn" style="width: auto;" onclick="switchPage('shop')">Przejdź do sklepu</button>
-            </div>
+            <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
+            <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
         </header>
+
+        <section class="status-quo">
+            <div class="fade-in">
+                <span class="mono">[MANIFESTO_v1.0]</span>
+                <h2>Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie.</h2>
+            </div>
+        </section>
+
+        <section class="rocket-viewer-section">
+            <div class="info-panel fade-in" style="flex:1;">
+                <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
+                <h2 style="font-size:2.8rem; margin:12px 0;">The Leveler</h2>
+                <p style="color: var(--text-dim);">Pułap docelowy: 250,000 FT</p>
+            </div>
+            <div class="model-container">
+                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" camera-controls></model-viewer>
+            </div>
+        </section>
+    </div>
+
+    <div id="page-missions" class="page">
+        <section style="padding:140px 10% 80px;">
+            <span class="mono">[OPERATIONS]</span>
+            <h1 style="font-size:2.8rem; margin-bottom:30px;">Missions</h1>
+            <div class="grid" style="padding:0;">
+                <div class="card"><span class="mono">M01</span><h3>Rocket Simon</h3><p>Długodystansowy lot testowy.</p></div>
+                <div class="card"><span class="mono">M02</span><h3>Ice Wall Recon</h3><p>Badania krawędzi.</p></div>
+            </div>
+        </section>
     </div>
 
     <div id="page-shop" class="page">
-        <div style="padding: 0 10%;">
-            <span class="mono">Dostępny ekwipunek</span>
-            <h2 style="font-size: 2.5rem; margin-bottom: 40px;">Gear & Parts</h2>
-        </div>
-        <div class="grid" id="product-list">
-            <div class="card">
-                <div class="product-thumb"><img src="bluza_przod.png" alt="Hoodie"></div>
-                <h3>Beyond the Curve Hoodie</h3>
-                <span class="price">249 PLN</span>
-                <button class="btn" onclick="openProduct('bluza')">Szczegóły</button>
+        <section style="padding:120px 0 80px;">
+            <div style="padding: 0 10%;"><span class="mono">[GEAR]</span><h1>Sklep</h1></div>
+            <div class="grid">
+                <div class="card">
+                    <div class="product-thumb" onclick="openProduct('bluza')"><img src="bluza_przod.png"></div>
+                    <h3>Beyond the Curve Hoodie</h3>
+                    <span class="price">249 PLN</span>
+                    <button class="btn-shop" onclick="openProduct('bluza')">Szczegóły</button>
+                </div>
+                <div class="card">
+                    <div class="product-thumb" onclick="openProduct('engine')"><img src="g_motor.png"></div>
+                    <h3>G-Class Engine Model</h3>
+                    <span class="price">599 PLN</span>
+                    <button class="btn-shop" onclick="openProduct('engine')">Szczegóły</button>
+                </div>
             </div>
-            <div class="card">
-                <div class="product-thumb"><img src="g_motor.png" alt="Engine"></div>
-                <h3>G-Class Engine Model</h3>
-                <span class="price">599 PLN</span>
-                <button class="btn" onclick="openProduct('engine')">Szczegóły</button>
-            </div>
-        </div>
+        </section>
     </div>
 
     <div id="page-shop-bluza" class="page">
-        <div class="product-detail">
-            <div class="detail-img"><img src="bluza_przod.png" alt="Hoodie"></div>
-            <div class="detail-info">
-                <button class="remove-item" onclick="switchPage('shop')" style="color: var(--text-dim); margin-bottom: 20px;">← Powrót</button>
-                <span class="mono">Odzież</span>
-                <h2>Beyond the Curve Hoodie</h2>
-                <span class="price">249 PLN</span>
-                <p style="color: var(--text-dim); margin-bottom: 30px;">Wysokiej gramatury bawełna z haftem FERC. Testowana w warunkach wysokogórskich.</p>
-                <button class="btn" onclick="addToCart('Beyond the Curve Hoodie', 249)">Dodaj do koszyka</button>
+        <section style="padding: 120px 10%;">
+            <button onclick="switchPage('shop')" class="mono" style="background:none; border:none; cursor:pointer; margin-bottom:20px;">← POWRÓT</button>
+            <div style="display:flex; gap:50px; align-items:center;">
+                <img src="bluza_przod.png" style="width:400px; background:var(--surface); border-radius:15px; padding:20px;">
+                <div>
+                    <h2>Beyond the Curve Hoodie</h2>
+                    <div class="price">249 PLN</div>
+                    <button class="btn-shop" onclick="addToCart('Beyond the Curve Hoodie', 249)">Dodaj do koszyka</button>
+                </div>
             </div>
-        </div>
+        </section>
     </div>
 
     <div id="page-shop-engine" class="page">
-        <div class="product-detail">
-            <div class="detail-img"><img src="g_motor.png" alt="Engine"></div>
-            <div class="detail-info">
-                <button class="remove-item" onclick="switchPage('shop')" style="color: var(--text-dim); margin-bottom: 20px;">← Powrót</button>
-                <span class="mono">Hardware</span>
-                <h2>G-Class Engine Scale Model</h2>
-                <span class="price">599 PLN</span>
-                <p style="color: var(--text-dim); margin-bottom: 30px;">Model kolekcjonerski silnika Klasy G. Każdy element odzwierciedla realny napęd Levelera.</p>
-                <button class="btn" onclick="addToCart('G-Class Engine Model', 599)">Dodaj do koszyka</button>
+        <section style="padding: 120px 10%;">
+            <button onclick="switchPage('shop')" class="mono" style="background:none; border:none; cursor:pointer; margin-bottom:20px;">← POWRÓT</button>
+            <div style="display:flex; gap:50px; flex-wrap:wrap;">
+                <img src="g_motor.png" style="width:400px; background:var(--surface); border-radius:15px; padding:20px;">
+                <div style="flex:1; min-width:300px;">
+                    <h2>G-Class Engine Model</h2>
+                    <div class="price">599 PLN</div>
+                    <button class="btn-shop" onclick="addToCart('G-Class Engine Model', 599)">Dodaj do koszyka</button>
+                    
+                    <div class="chart-panel">
+                        <div class="mono" style="margin-bottom:10px;">TELEMETRY_DATA</div>
+                        <div class="chart-row">
+                            <div class="chart-large"><canvas id="thrustChart"></canvas></div>
+                            <div class="chart-small"><canvas id="thrustZoom"></canvas></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <footer>&copy; 2026 FLAT EARTH ROCKET CORPORATION. BEYOND THE CURVE.</footer>
+    <footer>&copy; 2026 FLAT EARTH ROCKET CORPORATION.</footer>
 
     <script>
-        // --- DATA & STATE ---
+        // --- DATA ---
         let cart = JSON.parse(localStorage.getItem('ferc_cart')) || [];
+        const thrustCSV = `0.000,-0.072,0.167,-0.107,0.890,-0.005,1.431,14.262,1.972,71.149,2.514,33.503,3.055,0.484,4.047,0.843,6.032,0.879,10.001,0.678,16.136,-0.001`;
 
-        // --- NAVIGATION ---
-        function switchPage(pageId) {
+        // --- PAGE LOGIC ---
+        function switchPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            
-            const target = document.getElementById('page-' + pageId);
-            if(target) target.classList.add('active');
-            
-            const link = document.getElementById('link-' + (pageId.includes('shop') ? 'shop' : 'home'));
+            const el = document.getElementById('page-' + page);
+            if(el) el.classList.add('active');
+            const link = document.getElementById('link-' + (page.includes('shop') ? 'shop' : page));
             if(link) link.classList.add('active');
-            
             window.scrollTo(0,0);
+            refreshAnimations();
+            if(page === 'shop-engine') setTimeout(initCharts, 100);
         }
 
-        function openProduct(id) {
-            switchPage('shop-' + id);
-        }
+        function openProduct(id) { switchPage('shop-' + id); }
 
-        // --- CART LOGIC ---
+        // --- SHOP LOGIC ---
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
         }
 
         function addToCart(name, price) {
-            const item = { id: Date.now(), name, price };
-            cart.push(item);
-            saveCart();
-            updateCartUI();
-            toggleCart(); // Otwórz koszyk po dodaniu
-        }
-
-        function removeItem(id) {
-            cart = cart.filter(item => item.id !== id);
-            saveCart();
-            updateCartUI();
-        }
-
-        function saveCart() {
-            localStorage.setItem('ferc_cart', JSON.stringify(cart));
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cart-items');
-            const countEl = document.getElementById('cart-count');
-            const totalEl = document.getElementById('total-price');
-            
-            container.innerHTML = '';
-            let total = 0;
-
-            cart.forEach(item => {
-                total += item.price;
-                container.innerHTML += `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <h4>${item.name}</h4>
-                            <span class="mono">${item.price} PLN</span>
-                        </div>
-                        <button class="remove-item" onclick="removeItem(${item.id})">Usuń</button>
-                    </div>
-                `;
-            });
-
-            countEl.innerText = cart.length;
-            totalEl.innerText = total + ' PLN';
-        }
-
-        function checkout() {
-            if(cart.length === 0) return alert("Koszyk jest pusty!");
-            alert("Przekierowanie do płatności... (Symulacja)");
-            cart = [];
-            saveCart();
-            updateCartUI();
+            cart.push({id: Date.now(), name, price});
+            updateCart();
             toggleCart();
         }
 
-        // --- INIT ---
-        function init() {
-            updateCartUI();
-            // Obsługa klawisza ESC
-            document.addEventListener('keydown', (e) => {
-                if(e.key === 'Escape') {
-                    document.getElementById('cart-drawer').classList.remove('open');
-                    document.getElementById('overlay').classList.remove('active');
-                }
+        function updateCart() {
+            localStorage.setItem('ferc_cart', JSON.stringify(cart));
+            const content = document.getElementById('cart-content');
+            const totalEl = document.getElementById('cart-total');
+            const countEl = document.getElementById('cart-count');
+            content.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price;
+                content.innerHTML += `<div class="cart-item"><span>${item.name}</span><strong>${item.price} PLN</strong></div>`;
+            });
+            totalEl.innerText = total + ' PLN';
+            countEl.innerText = cart.length;
+        }
+
+        // --- CHARTS & TIMER ---
+        function initCharts() {
+            const ctx = document.getElementById('thrustChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [0, 1, 2, 3, 5, 10, 16],
+                    datasets: [{ label: 'Thrust', data: [0, 10, 70, 30, 1, 0.8, 0], borderColor: '#bfff00', tension: 0.4, fill: true, backgroundColor: 'rgba(191,255,0,0.1)' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
 
-        init();
+        function updateCountdown() {
+            const d = Math.max(0, new Date(2026, 5, 21) - Date.now());
+            const days = String(Math.floor(d / 86400000)).padStart(2,'0');
+            const hrs = String(Math.floor((d % 86400000) / 3600000)).padStart(2,'0');
+            const mins = String(Math.floor((d % 3600000) / 60000)).padStart(2,'0');
+            const secs = String(Math.floor((d % 60000) / 1000)).padStart(2,'0');
+            document.getElementById('countdown').innerText = `T-${days}:${hrs}:${mins}:${secs}`;
+        }
+
+        function refreshAnimations() {
+            const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('visible')));
+            document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCart();
+        refreshAnimations();
     </script>
 </body>
 </html>
