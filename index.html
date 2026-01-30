@@ -171,6 +171,79 @@
             .product-hero { flex-direction: column; }
             .product-hero .big-image { height: 360px; width: 100%; }
         }
+
+        /* -------------------------------------------------- */
+        /* OVERRIDES FOR SHOP: remove frames, show only images */
+        /* -------------------------------------------------- */
+        /* Target only the shop listing (main shop page) */
+        #page-shop .grid {
+            gap: 20px;
+            background: transparent;
+            border: none;
+        }
+        #page-shop .card {
+            background: transparent;
+            padding: 12px 6px;
+            border: none;
+            box-shadow: none;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            text-align:center;
+        }
+        /* thumbnail container: remove background/border and let image breathe */
+        #page-shop .product-thumb {
+            height: 320px; /* slightly taller */
+            background: transparent;
+            border: none;
+            margin-bottom: 8px;
+            padding: 0;
+            perspective: none;
+        }
+        /* show image cleanly and slightly enlarged */
+        #page-shop .product-thumb img {
+            position: relative;
+            width: auto;
+            height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transform: scale(1.05); /* slightly bigger by default */
+            transition: transform 300ms ease;
+        }
+        /* small hover grow (nie za bardzo) */
+        #page-shop .product-thumb:hover img { transform: scale(1.08); }
+
+        /* remove hover front/back swapping effect for clean image-only look */
+        #page-shop .product-thumb .img-back { display: none !important; }
+        #page-shop .product-thumb .img-front { position: relative; opacity: 1 !important; }
+
+        /* tighten up titles/prices under the image */
+        #page-shop .card h3 { margin: 8px 0 6px; }
+        #page-shop .price { margin: 6px 0 10px; font-size: 1.25rem; }
+        #page-shop .btn-shop { margin-bottom: 0; }
+
+        /* PRODUCT PAGE: remove frame around big image and slightly enlarge image */
+        #page-shop-bluza .big-image, #page-shop-engine .big-image {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            height: 560px; /* a bit taller on product pages */
+        }
+        #page-shop-bluza .big-image img, #page-shop-engine .big-image img {
+            max-width: 110%; /* slightly larger than container but still centered */
+            max-height: 100%;
+            object-fit: contain;
+            transform: scale(1.04);
+            transition: transform 300ms ease;
+        }
+        /* On small screens don't over-scale */
+        @media (max-width: 768px) {
+            #page-shop .product-thumb { height: 260px; }
+            #page-shop .product-thumb img { transform: scale(1.03); }
+            #page-shop-bluza .big-image, #page-shop-engine .big-image { height: 360px; }
+            #page-shop-bluza .big-image img, #page-shop-engine .big-image img { max-width: 100%; transform: scale(1.02); }
+        }
+
     </style>
 </head>
 <body>
@@ -187,6 +260,8 @@
             <span id="countdown" class="timer-value">T-00:00:00:00</span>
         </div>
     </nav>
+
+    <!-- rest of the HTML remains exactly the same as your original file (pages, scripts etc.) -->
 
     <!-- HOME -->
     <div id="page-home" class="page active">
