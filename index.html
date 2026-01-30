@@ -1,223 +1,130 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FERC | Flat Earth Rocket Corporation</title>
-
+    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <style>
         :root {
-            --accent: #bfff00;
+            --accent: #bfff00; 
             --bg: #000000;
             --surface: #0a0a0a;
             --text: #ffffff;
-            --text-dim: #9a9a9a;
+            --text-dim: #777777;
             --line: #1a1a1a;
         }
 
         html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Inter', sans-serif; 
-        }
-
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            line-height: 1.4; 
-            overflow-x: hidden; 
-        }
-
         body::before {
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.04; pointer-events: none; z-index: 9999;
+            opacity: 0.05; pointer-events: none; z-index: 9999;
         }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
-        /* Utilities */
-        .mono { 
-            font-family: 'JetBrains Mono', monospace; 
-            color: var(--accent); 
-            font-size: 0.65rem; 
-            letter-spacing: 2px; 
-            display: block; 
-            margin-bottom: 5px; 
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
+        .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; display: block; margin-bottom: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--accent); }
 
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
 
-        .fade-in { 
-            opacity: 0; 
-            transform: translateY(30px); 
-            transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1); 
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.2, 0.6, 0.2, 1);
         }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-        /* Navigation */
-        nav { 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            padding: 22px 46px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            z-index: 1000; 
-            background: rgba(0,0,0,0.85); 
-            backdrop-filter: blur(6px); 
-            border-bottom: 1px solid rgba(255,255,255,0.03); 
+        /* Nawigacja */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 25px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
         }
-
-        .logo { font-weight: 900; font-size: 1.15rem; letter-spacing: 2px; cursor: pointer; }
+        .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; cursor: pointer; }
         .logo span { color: var(--accent); }
 
-        .nav-links { display: flex; gap: 30px; }
+        .nav-links { display: flex; gap: 40px; }
         .nav-links a { 
-            text-decoration: none; 
-            color: #ddd; 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            cursor: pointer; 
+            text-decoration: none; color: white; font-size: 0.7rem; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; cursor: pointer;
         }
-        .nav-links a.active, .nav-links a:hover { color: var(--accent); }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
-        .timer-box { 
-            border: 1px solid rgba(255,255,255,0.03); 
-            padding: 8px 14px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-end; 
-            background: rgba(10,10,10,0.6); 
-            border-radius: 6px; 
+        .timer-box {
+            border: 1px solid #333; padding: 10px 20px;
+            display: flex; flex-direction: column; align-items: flex-end;
+            background: rgba(10, 10, 10, 0.8); border-radius: 4px;
         }
-        .timer-label { font-size: 0.55rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; }
-        .timer-value { font-size: 0.95rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .timer-label { font-size: 0.5rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; }
+        .timer-value { font-size: 1rem; font-weight: 900; font-variant-numeric: tabular-nums; }
 
-        /* Sections */
-        .hero { 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            padding: 0 10%; 
-            background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%); 
+        /* Sekcje Home */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding: 0 10%; position: relative;
+            background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%);
         }
-        .hero h1 { font-size: clamp(3rem, 12vw, 7.5rem); font-weight: 900; line-height: 0.9; letter-spacing: -2px; }
+        .hero h1 { font-size: clamp(3rem, 12vw, 9rem); font-weight: 900; line-height: 0.85; text-transform: uppercase; letter-spacing: -4px; }
 
-        .status-quo { 
-            padding: 120px 10%; 
-            background: var(--surface); 
-            border-top: 1px solid rgba(255,255,255,0.02); 
-            border-bottom: 1px solid rgba(255,255,255,0.02); 
+        .status-quo {
+            padding: 150px 10%; background: var(--surface);
+            border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+            position: relative; overflow: hidden;
         }
+        .status-quo h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; max-width: 1000px; text-transform: uppercase; font-weight: 900; position: relative; z-index: 2; }
 
-        .rocket-viewer-section { min-height: 80vh; display: flex; align-items: center; padding: 60px 10%; }
-        .info-panel { flex: 1; padding-right: 40px; }
-        .model-container { flex: 1.2; height: 70vh; position: relative; }
-        model-viewer { width: 100%; height: 100%; }
+        .rocket-viewer-section { min-height: 100vh; display: flex; align-items: center; padding: 80px 10%; position: relative; }
+        .info-panel { flex: 1; z-index: 10; padding-right: 40px; }
+        .spec-item { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 0.8rem; text-transform: uppercase; }
+        .model-container { flex: 1.5; height: 85vh; position: relative; }
+        model-viewer { width: 100%; height: 100%; outline: none; }
 
-        /* Grid & Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
-        .card { 
-            background: transparent; 
-            padding: 28px 20px; 
-            transition: 0.3s; 
-            border-radius: 8px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            text-align: center; 
-        }
-        .card h3 { color: var(--accent); margin: 10px 0; font-size: 1.05rem; }
+        /* Sklep Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+        .card { background: var(--bg); padding: 60px 40px; transition: 0.4s; text-align: center; }
+        .card:hover { background: #050505; }
+        
+        .product-thumb { height: 320px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+        .product-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.5s ease; }
+        .card:hover .product-thumb img { transform: scale(1.05); }
 
-        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 1.25rem; margin: 8px 0; }
-        .btn-shop { 
-            background: var(--accent); 
-            color: #000; 
-            border: none; 
-            padding: 10px 16px; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-        }
+        /* Produkt Szczegóły */
+        .product-layout { display: flex; gap: 60px; padding: 180px 10% 100px; max-width: 1400px; margin: 0 auto; }
+        .product-gallery { flex: 1; }
+        .main-img-wrap { border: 1px solid var(--line); margin-bottom: 20px; display: flex; justify-content: center; background: #050505; }
+        .main-img-wrap img { max-width: 100%; height: auto; }
+        .product-info { flex: 1; }
 
-        .product-thumb { 
-            height: 320px; 
-            margin-bottom: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            overflow: hidden;
-        }
-        .product-thumb img { width: auto; height: 100%; object-fit: contain; transition: transform 0.3s ease; }
-        .product-thumb:hover img { transform: scale(1.08); }
+        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 2rem; margin: 20px 0; display: block; }
+        .btn-large { background: var(--accent); color: black; border: none; padding: 20px; width: 100%; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-large:hover { opacity: 0.8; }
+        .back-link { background: transparent; border: 1px solid var(--line); color: var(--text-dim); padding: 10px 20px; cursor: pointer; margin-bottom: 30px; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
 
-        /* Product Detail Page */
-        .product-page { padding: 120px 10% 100px; }
-        .product-hero { display: flex; gap: 36px; align-items: flex-start; }
-        .big-image { 
-            flex: 1; 
-            height: 560px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-        }
-        .big-image img { max-width: 110%; max-height: 100%; object-fit: contain; }
+        /* Wykresy w produkcie Engine */
+        .chart-panel { margin-top: 40px; background: var(--surface); border: 1px solid var(--line); padding: 25px; border-radius: 4px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .chart-row { display: flex; gap: 20px; }
+        .chart-large { flex: 2; height: 300px; }
+        .chart-small { flex: 1; height: 300px; }
+        .small-btn { background: transparent; border: 1px solid var(--line); color: var(--text-dim); padding: 5px 10px; cursor: pointer; font-size: 0.6rem; }
 
-        .back-link { 
-            background: transparent; 
-            border: 1px solid rgba(255,255,255,0.03); 
-            color: var(--text-dim); 
-            padding: 8px 12px; 
-            cursor: pointer; 
-            border-radius: 6px; 
-            margin-bottom: 18px; 
-        }
+        footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
 
-        /* Charts */
-        .chart-panel { 
-            margin-top: 18px; 
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); 
-            border-radius: 10px; 
-            padding: 18px; 
-        }
-        .chart-row { display: flex; gap: 16px; }
-        .chart-large { flex: 2; height: 300px; position: relative; }
-        .chart-small { flex: 1; min-width: 260px; height: 300px; position: relative; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .small-btn { 
-            background: transparent; 
-            border: 1px solid rgba(255,255,255,0.04); 
-            color: var(--text-dim); 
-            padding: 6px 10px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-        }
-
-        footer { padding: 50px 10%; border-top: 1px solid rgba(255,255,255,0.03); color: var(--text-dim); text-align: center; font-size: 0.75rem; }
-
-        @media (max-width: 1024px) {
-            .product-hero { flex-direction: column; }
-            .big-image { height: 360px; }
-            .chart-row { flex-direction: column; }
+        @media (max-width: 1024px) { 
+            .rocket-viewer-section, .product-layout, .chart-row { flex-direction: column; } 
+            .nav-links { display: none; } 
+            .product-layout { padding-top: 120px; }
         }
     </style>
 </head>
@@ -245,148 +152,132 @@
         <section class="status-quo">
             <div class="fade-in">
                 <span class="mono">[MANIFESTO_v1.0]</span>
-                <h2>Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie.</h2>
+                <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
             </div>
         </section>
 
         <section class="rocket-viewer-section">
             <div class="info-panel fade-in">
                 <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
-                <h2 style="font-size:2.8rem; margin:12px 0;">The Leveler</h2>
-                <div class="spec-item">
-                    <span class="spec-label">Pułap docelowy: </span>
-                    <span><span class="stat-count">250,000</span> FT</span>
-                </div>
+                <h2 style="font-size: 3rem; margin: 15px 0; text-transform: uppercase; font-weight: 900;">The Leveler</h2>
+                <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span>250,000 FT</span></div>
+                <div class="spec-item"><span class="spec-label">Napęd</span><span>Solid State G-Class</span></div>
+                <div class="spec-item" style="border:none"><span class="spec-label">Status</span><span style="color: var(--accent);">Ready</span></div>
             </div>
             <div class="model-container">
-                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2"></model-viewer>
-            </div>
-        </section>
-
-        <section class="grid" style="padding:40px 10% 80px;">
-            <div class="card fade-in">
-                <span class="mono">TECH_CORE</span>
-                <h3>Silniki Klasy G</h3>
-                <p style="color:var(--text-dim);">Autorski napęd wysokoprężny.</p>
-            </div>
-            <div class="card fade-in">
-                <span class="mono">MODULE_02</span>
-                <h3>Sensory</h3>
-                <p style="color:var(--text-dim);">Mechanika bezwładnościowa.</p>
-            </div>
-            <div class="card fade-in">
-                <span class="mono">MODULE_03</span>
-                <h3>Dane</h3>
-                <p style="color:var(--text-dim);">Surowy zapis z sensorów.</p>
+                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" auto-rotate-delay="0"></model-viewer>
             </div>
         </section>
     </div>
 
     <div id="page-missions" class="page">
-        <section style="padding:140px 10% 80px;">
-            <span class="mono">[STRATEGIC_OPERATIONS]</span>
-            <h1 style="font-size:2.8rem; margin-bottom:30px;">Operations</h1>
+        <section style="padding: 180px 10% 100px;">
+            <span class="mono">[LOGS]</span>
+            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Operations</h1>
             <div class="grid">
                 <div class="card fade-in">
-                    <span class="mono">FLAGSHIP_PROJECT</span>
+                    <span class="mono">FLAGSHIP</span>
                     <h3>Rocket Simon</h3>
-                    <p style="color:var(--text-dim);">Największa jednostka w historii FERC.</p>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Największa jednostka w historii. Start planowany na lato 2026.</p>
                 </div>
                 <div class="card fade-in">
-                    <span class="mono">ENGINEERING_DEPT</span>
-                    <h3>Silniki Klasy G</h3>
-                    <p style="color:var(--text-dim);">Nowa generacja silników.</p>
-                </div>
-                <div class="card fade-in">
-                    <span class="mono">MISSION_03</span>
+                    <span class="mono">MISSION_02</span>
                     <h3>Ice Wall Recon</h3>
-                    <p style="color:var(--text-dim);">Długodystansowy lot.</p>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Długodystansowy lot badawczy w kierunku krawędzi.</p>
                 </div>
             </div>
         </section>
     </div>
 
     <div id="page-shop" class="page">
-        <section style="padding:120px 10% 80px;">
+        <section style="padding: 180px 10% 100px;">
             <span class="mono">[COMMERCIAL_UNIT]</span>
-            <h1 style="font-size:2.6rem; margin-bottom:20px;">Gear</h1>
+            <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Gear</h1>
             <div class="grid">
-                <div class="card fade-in">
-                    <div class="product-thumb" onclick="openProduct('bluza')">
-                        <img src="bluza_przod.png" alt="Hoodie">
+                <div class="card fade-in" onclick="openProduct('bluza')" style="cursor:pointer">
+                    <div class="product-thumb">
+                        <img src="bluza_front.png" alt="Hoodie">
                     </div>
                     <h3>Beyond the Curve Hoodie</h3>
                     <span class="price">249 PLN</span>
-                    <button class="btn-shop" onclick="openProduct('bluza')">Buy Gear</button>
+                    <button class="btn-large" style="padding: 10px; font-size: 0.7rem;">Szczegóły</button>
                 </div>
-
-                <div class="card fade-in">
-                    <div class="product-thumb" onclick="openProduct('engine')">
+                <div class="card fade-in" onclick="openProduct('engine')" style="cursor:pointer">
+                    <div class="product-thumb">
                         <img src="g_motor.png" alt="Engine">
                     </div>
                     <h3>G-Class Engine Model</h3>
                     <span class="price">599 PLN</span>
-                    <button class="btn-shop" onclick="openProduct('engine')">Pre-order</button>
+                    <button class="btn-large" style="padding: 10px; font-size: 0.7rem;">Pre-order</button>
                 </div>
             </div>
         </section>
     </div>
 
-    <div id="page-shop-engine" class="page">
-        <section class="product-page">
-            <div style="max-width:1200px; margin:0 auto;">
-                <button class="back-link" onclick="switchPage('shop')">← Powrót do sklepu</button>
-                <div class="product-hero fade-in">
-                    <div class="big-image">
-                        <img src="g_motor.png" alt="Engine Large">
-                    </div>
-                    <div class="product-info">
-                        <span class="mono">[PRODUCT]</span>
-                        <h2>G-Class Engine Scale Model</h2>
-                        <div class="price">599 PLN</div>
-                        <p style="color:var(--text-dim);">Model silnika w skali, pre-order.</p>
-                        
-                        <div style="display:flex; gap:12px; margin: 20px 0;">
-                            <button class="btn-shop" onclick="addToCart('engine')">Dodaj do koszyka</button>
-                        </div>
+    <div id="page-shop-bluza" class="page">
+        <div class="product-layout">
+            <div class="product-gallery">
+                <button class="back-link" onclick="switchPage('shop')">← Wróć do sklepu</button>
+                <div class="main-img-wrap"><img id="pImg" src="bluza_front.png"></div>
+            </div>
+            <div class="product-info">
+                <span class="mono">LIMITED_EDITION</span>
+                <h1 style="font-size: 3.5rem; font-weight: 900; text-transform: uppercase; line-height: 1;">Beyond the Curve</h1>
+                <p style="color:var(--text-dim); margin-top:20px;">Oversize Baggy Hoodie. Ciężka bawełna 450g. Projekt trajektorii Rocket Simon na plecach.</p>
+                <span class="price">249.00 PLN</span>
+                <button class="btn-large" onclick="alert('Dodano do koszyka')">Dodaj do koszyka</button>
+            </div>
+        </div>
+    </div>
 
-                        <div class="chart-panel">
-                            <div class="chart-header">
-                                <h4>Osiągi: ciąg [N] vs czas [s]</h4>
-                                <div class="chart-actions">
-                                    <button class="small-btn" id="downloadCSV">CSV</button>
-                                    <button class="small-btn" id="resetZoom">Reset</button>
-                                </div>
-                            </div>
-                            <div class="chart-row">
-                                <div class="chart-large"><canvas id="thrustChart"></canvas></div>
-                                <div class="chart-small"><canvas id="thrustZoom"></canvas></div>
-                            </div>
+    <div id="page-shop-engine" class="page">
+        <div class="product-layout">
+            <div class="product-gallery">
+                <button class="back-link" onclick="switchPage('shop')">← Wróć do sklepu</button>
+                <div class="main-img-wrap"><img src="g_motor.png"></div>
+            </div>
+            <div class="product-info">
+                <span class="mono">[ENGINEERING_SCALE_MODEL]</span>
+                <h1 style="font-size: 3.5rem; font-weight: 900; text-transform: uppercase; line-height: 1;">G-Class Engine</h1>
+                <p style="color:var(--text-dim); margin-top:20px;">Model kolekcjonerski w skali 1:10. Wykonany z aluminium lotniczego i tytanu.</p>
+                <span class="price">599.00 PLN</span>
+                <button class="btn-large" onclick="alert('Pre-order zarejestrowany')">Zarezerwuj pre-order</button>
+
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <h4 class="mono">THRUST_DATA [N/s]</h4>
+                        <div>
+                            <button class="small-btn">CSV</button>
+                            <button class="small-btn" onclick="initEngineCharts()">REFRESH</button>
                         </div>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-large"><canvas id="thrustChart"></canvas></div>
+                        <div class="chart-small"><canvas id="thrustZoom"></canvas></div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     </div>
 
     <footer>&copy; 2026 FLAT EARTH ROCKET CORPORATION. BEYOND THE CURVE.</footer>
 
     <script>
-        // Navigation Logic
-        function switchPage(pageName) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        // Nawigacja między stronami
+        function switchPage(p) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
             
-            const targetPage = document.getElementById('page-' + pageName);
-            const targetLink = document.getElementById('link-' + pageName);
+            const target = document.getElementById('page-' + p);
+            if(target) target.classList.add('active');
             
-            if (targetPage) targetPage.classList.add('active');
-            if (targetLink) targetLink.classList.add('active');
+            const link = document.getElementById('link-' + p);
+            if(link) link.classList.add('active');
             
             window.scrollTo(0,0);
             refreshAnimations();
 
-            if (pageName === 'shop-engine') {
+            if (p === 'shop-engine') {
                 setTimeout(initEngineCharts, 100);
             }
         }
@@ -395,57 +286,53 @@
             switchPage('shop-' + key);
         }
 
-        function addToCart(item) {
-            alert('Dodano do koszyka: ' + item);
-        }
-
-        // Animations
+        // Animacje scrollowania
         function refreshAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
-                });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            const obs = new IntersectionObserver((es) => {
+                es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+            }, {threshold: 0.1});
+            document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
         }
         refreshAnimations();
 
-        // Countdown
-        function updateCountdown() {
-            const targetDate = new Date(2026, 5, 21).getTime();
-            const now = Date.now();
-            const d = Math.max(0, targetDate - now);
-            const days = String(Math.floor(d / (1000*60*60*24))).padStart(2, '0');
-            const hours = String(Math.floor((d % (1000*60*60*24)) / (1000*60*60))).padStart(2, '0');
-            const mins = String(Math.floor((d % (1000*60*60)) / (1000*60))).padStart(2, '0');
-            const secs = String(Math.floor((d % (1000*60)) / 1000)).padStart(2, '0');
-            document.getElementById('countdown').textContent = `T-${days}:${hours}:${mins}:${secs}`;
-        }
-        setInterval(updateCountdown, 1000);
+        // Countdown Timer
+        setInterval(() => {
+            const d = new Date(2026, 5, 21) - new Date();
+            const days = Math.max(0, Math.floor(d / 86400000)).toString().padStart(2,'0');
+            const hrs = Math.max(0, Math.floor((d % 86400000) / 3600000)).toString().padStart(2,'0');
+            const mins = Math.max(0, Math.floor((d % 3600000) / 60000)).toString().padStart(2,'0');
+            const secs = Math.max(0, Math.floor((d % 60000) / 1000)).toString().padStart(2,'0');
+            document.getElementById("countdown").innerHTML = `T-${days}:${hrs}:${mins}:${secs}`;
+        }, 1000);
 
-        // Charts initialization
-        let mainChart, zoomChart;
-        const thrustCSV = `Czas [s],N\n0.0,0\n1.0,0.5\n1.5,25\n2.0,71\n2.5,33\n3.0,0.5\n16.0,0`; // Skrócone dla przykładu
-
+        // Inicjalizacja Wykresów
+        let mainChart;
         function initEngineCharts() {
-            if (mainChart) return;
             const ctx = document.getElementById('thrustChart').getContext('2d');
-            const zCtx = document.getElementById('thrustZoom').getContext('2d');
+            if (mainChart) mainChart.destroy();
 
             mainChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: [0, 1, 1.5, 2, 2.5, 3, 5, 10, 15],
+                    labels: [0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5],
                     datasets: [{
                         label: 'Thrust [N]',
-                        data: [0, 0.5, 25, 71, 33, 0.5, 0.8, 0.6, 0],
+                        data: [0, 10, 45, 89, 70, 30, 10, 5, 0],
                         borderColor: '#bfff00',
-                        backgroundColor: 'rgba(191,255,0,0.1)',
+                        backgroundColor: 'rgba(191, 255, 0, 0.1)',
                         fill: true,
                         tension: 0.4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#1a1a1a' }, ticks: { color: '#777' } },
+                        x: { grid: { color: '#1a1a1a' }, ticks: { color: '#777' } }
+                    }
+                }
             });
         }
     </script>
