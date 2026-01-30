@@ -21,7 +21,6 @@
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        /* 1. EFEKT SZUMU (GRAIN) */
         body::before {
             content: "";
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -44,35 +43,28 @@
 
         /* Navigation */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 20px 50px;
+            position: fixed; top: 0; width: 100%; padding: 30px 50px;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--line);
+            z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
         }
-        .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; cursor: pointer; }
+        .logo { font-weight: 900; font-size: 1.3rem; letter-spacing: 2px; text-decoration: none; color: white; }
         .logo span { color: var(--accent); }
 
-        .nav-links { display: flex; gap: 30px; }
+        .nav-links { display: flex; gap: 30px; position: absolute; left: 50%; transform: translateX(-50%); }
         .nav-links a { 
-            text-decoration: none; color: var(--text); font-size: 0.7rem; 
-            font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.3s; cursor: pointer;
+            text-decoration: none; color: white; font-size: 0.7rem; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .nav-links a:hover { color: var(--accent); }
 
-        /* Timer Box */
         .timer-box {
-            border: 1px solid #333; padding: 8px 20px;
+            border: 1px solid #333; padding: 12px 25px;
             display: flex; flex-direction: column; align-items: flex-end;
-            background: rgba(10, 10, 10, 0.8); border-radius: 4px;
-            min-width: 180px;
+            background: rgba(10, 10, 10, 0.8); border-radius: 8px;
+            min-width: 220px; backdrop-filter: blur(10px);
         }
-        .timer-label { font-size: 0.5rem; letter-spacing: 1px; color: var(--accent); font-weight: 700; }
-        .timer-value { font-size: 0.9rem; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; }
-
-        /* Subpages handling */
-        .page { display: none; }
-        .page.active { display: block; }
+        .timer-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+        .timer-value { font-size: 1.1rem; font-weight: 900; color: var(--text); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
 
         /* Hero */
         .hero {
@@ -108,16 +100,13 @@
         }
         .spec-label { color: var(--text-dim); }
         .model-container { flex: 1.5; height: 85vh; position: relative; }
-        model-viewer { width: 100%; height: 100%; }
-
-        /* Content Pages Styles */
-        .content-page { padding: 150px 10% 80px; min-height: 100vh; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
-        .card { background: var(--surface); border: 1px solid var(--line); padding: 40px; transition: 0.3s; }
-        .card:hover { border-color: var(--accent); }
-        .price { color: var(--accent); font-family: 'JetBrains Mono'; font-size: 1.2rem; margin: 20px 0; display: block; }
-        .buy-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 10px 20px; font-weight: 900; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; transition: 0.3s; }
-        .buy-btn:hover { background: var(--accent); color: black; }
+        .rocket-glow {
+            position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+            width: 60%; height: 20px;
+            background: radial-gradient(ellipse at center, rgba(191,255,0,0.15) 0%, transparent 70%);
+            filter: blur(20px); pointer-events: none;
+        }
+        model-viewer { width: 100%; height: 100%; pointer-events: none; }
 
         /* Features */
         .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); background: var(--line); gap: 1px; }
@@ -125,23 +114,33 @@
         .feature-card:hover { background: #050505; border-color: var(--accent); }
         .feature-card h3 { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-top: 10px; }
 
+        /* Nowe Sekcje: Misje i Sklep */
+        .section-padding { padding: 120px 10%; border-top: 1px solid var(--line); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 60px; }
+        .card { background: var(--surface); border: 1px solid var(--line); padding: 40px; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); }
+        .price { color: var(--accent); font-family: 'JetBrains Mono'; font-size: 1.2rem; margin: 20px 0; display: block; }
+        .buy-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 12px 24px; font-weight: 900; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; transition: 0.3s; width: 100%; }
+        .buy-btn:hover { background: var(--accent); color: black; }
+
         footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
 
         @media (max-width: 1024px) {
             .nav-links { display: none; }
             .rocket-viewer-section { flex-direction: column; }
-            .model-container { height: 500px; width: 100%; }
+            .model-container { height: 500px; }
+            .timer-box { display: none; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo" onclick="showPage('home-page')">FERC<span>.</span></div>
+        <a href="#" class="logo">FERC<span>.</span></a>
         <div class="nav-links">
-            <a onclick="showPage('home-page')" id="nav-home" class="active">The Leveler</a>
-            <a onclick="showPage('missions-page')" id="nav-missions">Misje</a>
-            <a onclick="showPage('shop-page')" id="nav-shop">Sklep</a>
+            <a href="#explore">Technologia</a>
+            <a href="#missions">Misje</a>
+            <a href="#shop">Sklep</a>
         </div>
         <div class="timer-box">
             <span class="timer-label">UPCOMING LAUNCH</span>
@@ -149,139 +148,145 @@
         </div>
     </nav>
 
-    <main id="home-page" class="page active">
-        <header class="hero">
-            <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
-            <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
-            <div class="btn-container fade-in">
-                <a onclick="showPage('home-page', 'explore')" class="primary-btn">Eksploruj Technologię</a>
-            </div>
-        </header>
+    <header class="hero">
+        <span class="mono fade-in">[INITIATING_CORE_SYSTEMS]</span>
+        <h1 class="fade-in">Flat Earth<br>Rocket<br><span style="color: var(--accent);">Corp</span></h1>
+        <div class="btn-container fade-in">
+            <a href="#explore" class="primary-btn">Eksploruj Technologię</a>
+        </div>
+    </header>
 
-        <section class="status-quo">
-            <div class="fade-in">
-                <span class="mono">[MANIFESTO_v1.0]</span>
-                <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
-            </div>
-        </section>
+    <section class="status-quo">
+        <div class="fade-in">
+            <span class="mono">[MANIFESTO_v1.0]</span>
+            <h2 style="color: var(--text-dim);">Kwestionujemy <span style="color: white;">status quo</span> poprzez fizykę, a nie teorie. Budujemy maszyny, które dotrą tam, gdzie kończą się oficjalne narracje.</h2>
+        </div>
+    </section>
 
-        <section id="explore" class="rocket-viewer-section">
-            <div class="info-panel fade-in">
-                <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
-                <h2 style="font-size: 3rem; margin: 15px 0 25px; text-transform: uppercase; font-weight: 900;">FERC-ABC Rocket<br>The Leveler</h2>
-                <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span><span class="stat-count" data-target="2000">0</span> FT</span></div>
-                <div class="spec-item"><span class="spec-label">Stabilizacja</span><span>Passive Aero-Fins</span></div>
-                <div class="spec-item" style="border:none"><span class="spec-label">Status projektu</span><span style="color: var(--accent);">Fully Tested & Ready</span></div>
-            </div>
-            <div class="model-container">
-                <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" auto-rotate-delay="0"></model-viewer>
-            </div>
-        </section>
+    <section id="explore" class="rocket-viewer-section">
+        <div class="info-panel fade-in">
+            <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
+            <h2 style="font-size: 3rem; margin: 15px 0 25px; text-transform: uppercase; font-weight: 900;">FERC-ABC Rocket<br>The Leveler</h2>
+            <div class="spec-item"><span class="spec-label">Pułap docelowy</span><span><span class="stat-count" data-target="2000">0</span> FT</span></div>
+            <div class="spec-item"><span class="spec-label">Stabilizacja</span><span>Passive Aero-Fins</span></div>
+            <div class="spec-item" style="border:none"><span class="spec-label">Status projektu</span><span style="color: var(--accent);">Fully Tested & Ready</span></div>
+        </div>
 
-        <section class="features">
-            <div class="feature-card fade-in">
-                <span class="mono">MODULE_01</span>
-                <h3>Optyka</h3>
-                <p>Brak efektu "Fish-eye". Stosujemy soczewki korygujące dystorsję, aby obraz horyzontu był w 100% autentyczny.</p>
-            </div>
-            <div class="feature-card fade-in">
-                <span class="mono">MODULE_02</span>
-                <h3>Sensory</h3>
-                <p>Niezależne od GPS systemy pozycjonowania oparte na klasycznej mechanice bezwładnościowej.</p>
-            </div>
-            <div class="feature-card fade-in">
-                <span class="mono">MODULE_03</span>
-                <h3>Dane</h3>
-                <p>Zaszyfrowany przesył RAW w czasie rzeczywistym. Brak post-produkcji, brak cenzury, tylko surowy plik.</p>
-            </div>
-        </section>
-    </main>
+        <div class="model-container">
+            <div class="rocket-glow"></div>
+            <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" auto-rotate-delay="0"></model-viewer>
+        </div>
+    </section>
 
-    <main id="missions-page" class="page">
-        <section class="content-page">
-            <span class="mono">[FLIGHT_SCHEDULE_2026]</span>
-            <h1 style="font-size: 4rem; text-transform: uppercase; letter-spacing: -2px;">Nadchodzące <span style="color: var(--accent);">Misje</span></h1>
+    <section class="features">
+        <div class="feature-card fade-in">
+            <span class="mono">MODULE_01</span>
+            <h3>Optyka</h3>
+            <p>Brak efektu "Fish-eye". Stosujemy soczewki korygujące dystorsję, aby obraz horyzontu był w 100% autentyczny.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <span class="mono">MODULE_02</span>
+            <h3>Sensory</h3>
+            <p>Niezależne od GPS systemy pozycjonowania oparte na klasycznej mechanice bezwładnościowej.</p>
+        </div>
+        <div class="feature-card fade-in">
+            <span class="mono">MODULE_03</span>
+            <h3>Dane</h3>
+            <p>Zaszyfrowany przesył RAW w czasie rzeczywistym. Brak post-produkcji, brak cenzury, tylko surowy plik.</p>
+        </div>
+    </section>
+
+    <section id="missions" class="section-padding">
+        <div class="fade-in">
+            <span class="mono">[FLIGHT_LOG_2026]</span>
+            <h2 style="font-size: 3rem; text-transform: uppercase; font-weight: 900;">Nadchodzące Misje</h2>
             <div class="grid">
-                <div class="card fade-in">
-                    <span class="mono">MARzec 2026</span>
-                    <h3>Operation: Firmament</h3>
-                    <p style="color: var(--text-dim); margin-top: 15px;">Pierwsza próba pionowego lotu balistycznego z kamerą szerokopasmową RAW.</p>
-                    <span class="price" style="font-size: 0.8rem; opacity: 0.6;">LOKALIZACJA: DATA_PROTECTED</span>
+                <div class="card">
+                    <span class="mono">MISSION_01</span>
+                    <h3>High Altitude Eye</h3>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Test balistyczny na wysokości 150,000 stóp w celu weryfikacji linii horyzontu.</p>
+                    <div style="margin-top: 20px; font-weight: bold; color: var(--accent);">CZERWIEC 2026</div>
                 </div>
-                <div class="card fade-in">
-                    <span class="mono">CZERWIEC 2026</span>
-                    <h3>Ice Wall Recon</h3>
-                    <p style="color: var(--text-dim); margin-top: 15px;">Misja zwiadowcza wzdłuż domniemanej bariery lodowej Antarktydy.</p>
-                    <span class="price" style="font-size: 0.8rem; opacity: 0.6;">STATUS: PLANNING</span>
+                <div class="card">
+                    <span class="mono">MISSION_02</span>
+                    <h3>Antarctica Edge</h3>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Misja zwiadowcza w stronę południowej bariery. Pierwszy lot autonomiczny.</p>
+                    <div style="margin-top: 20px; font-weight: bold; color: var(--accent);">SIERPIEŃ 2026</div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <main id="shop-page" class="page">
-        <section class="content-page">
-            <span class="mono">[FERC_OFFICIAL_MERCH]</span>
-            <h1 style="font-size: 4rem; text-transform: uppercase; letter-spacing: -2px;">Sklep <span style="color: var(--accent);">Korporacyjny</span></h1>
+    <section id="shop" class="section-padding" style="background: var(--surface);">
+        <div class="fade-in">
+            <span class="mono">[OFFICIAL_MERCH]</span>
+            <h2 style="font-size: 3rem; text-transform: uppercase; font-weight: 900;">FERC Shop</h2>
             <div class="grid">
-                <div class="card fade-in">
-                    <div style="width: 100%; height: 200px; background: #111; border: 1px solid #222; margin-bottom: 20px;"></div>
-                    <h3>"The Leveler" Hoodie</h3>
-                    <span class="price">249.00 PLN</span>
-                    <button class="buy-btn">Dodaj do koszyka</button>
+                <div class="card">
+                    <div style="width: 100%; height: 180px; background: #111; margin-bottom: 20px;"></div>
+                    <h3>"No Curve" Hoodie</h3>
+                    <span class="price">199.00 PLN</span>
+                    <button class="buy-btn">Kup teraz</button>
                 </div>
-                <div class="card fade-in">
-                    <div style="width: 100%; height: 200px; background: #111; border: 1px solid #222; margin-bottom: 20px;"></div>
-                    <h3>NASA Correction Lens</h3>
-                    <span class="price">89.00 PLN</span>
-                    <button class="buy-btn">Dodaj do koszyka</button>
+                <div class="card">
+                    <div style="width: 100%; height: 180px; background: #111; margin-bottom: 20px;"></div>
+                    <h3>The Leveler Model</h3>
+                    <span class="price">450.00 PLN</span>
+                    <button class="buy-btn">Kup teraz</button>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <footer>
         &copy; 2026 FLAT EARTH ROCKET CORPORATION. BEYOND THE CURVE.
     </footer>
 
     <script>
-        // Funkcja obsługi podstron
-        function showPage(pageId, anchorId = null) {
-            // Ukryj wszystkie strony
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Odznacz wszystkie linki w nav
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            
-            // Pokaż wybraną stronę
-            const targetPage = document.getElementById(pageId);
-            targetPage.classList.add('active');
-            
-            // Ustaw aktywny link w menu
-            if (pageId === 'home-page') document.getElementById('nav-home').classList.add('active');
-            if (pageId === 'missions-page') document.getElementById('nav-missions').classList.add('active');
-            if (pageId === 'shop-page') document.getElementById('nav-shop').classList.add('active');
-
-            // Jeśli jest kotwica (np. "explore"), przewiń do niej
-            if (anchorId) {
-                setTimeout(() => {
-                    document.getElementById(anchorId).scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-            } else {
-                window.scrollTo(0, 0);
-            }
-
-            // Odśwież animacje fade-in dla nowej strony
-            checkFadeIns();
-        }
-
         // Animacja cyferek
         const animateStats = (el) => {
             const target = +el.getAttribute('data-target');
+            const count = +el.innerText;
             const speed = 100;
             const inc = target / speed;
-            const update = () => {
-                const count = +el.innerText;
-                if (count < target) {
-                    el.innerText = Math.ceil(count + inc);
-                    setTimeout(update, 15);
-                } else {
-                    el.innerText
+            if (count < target) {
+                el.innerText = Math.ceil(count + inc);
+                setTimeout(() => animateStats(el), 15);
+            } else {
+                el.innerText = target;
+            }
+        };
+
+        // Obserwator animacji fade-in
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if(entry.target.querySelector('.stat-count')) {
+                         entry.target.querySelectorAll('.stat-count').forEach(counter => {
+                             if(counter.innerText == "0") animateStats(counter);
+                         });
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Odliczanie
+        function updateCountdown() {
+            const targetDate = new Date(2026, 5, 26, 0, 0, 0).getTime(); 
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            document.getElementById("countdown").innerHTML = `T-${days}:${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+
+</body>
+</html>
