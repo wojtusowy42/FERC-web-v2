@@ -30,7 +30,9 @@
         body { background-color: var(--bg); color: var(--text); line-height: 1.4; overflow-x: hidden; }
 
         .mono { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.65rem; letter-spacing: 2px; display: block; margin-bottom: 5px; }
-        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); }
+
         /* NAVIGATION */
         nav { position: fixed; top: 0; width: 100%; padding: 22px 46px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.03); }
         .logo { font-weight: 900; font-size: 1.15rem; letter-spacing: 2px; cursor: pointer; }
@@ -39,20 +41,17 @@
         .nav-links a { text-decoration:none; color: #ddd; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; cursor:pointer; }
         .nav-links a.active, .nav-links a:hover { color: var(--accent); }
 
-        .cart-trigger { background: none; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; position: relative; }
-        #cart-count { background: var(--accent); color: black; position: absolute; top: -8px; right: -8px; font-size: 0.7rem; font-weight: 900; padding: 2px 6px; border-radius: 50%; }
+        /* CART TRIGGER */
+        .cart-btn { background: none; border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        #cart-count { background: var(--accent); color: #000; font-size: 0.7rem; font-weight: 900; padding: 2px 6px; border-radius: 10px; }
 
-        /* TIMER */
-        .timer-box { border: 1px solid rgba(255,255,255,0.03); padding:8px 14px; display:flex; flex-direction:column; align-items:flex-end; background: rgba(10,10,10,0.6); border-radius:6px; }
-        .timer-label { font-size: 0.55rem; letter-spacing: 2px; color: var(--accent); font-weight:700; }
-        .timer-value { font-size: 0.95rem; font-weight:900; font-variant-numeric: tabular-nums; }
-
-        /* LAYOUT ELEMENTS */
+        /* PAGES */
         .page { display: none; min-height: 100vh; }
         .page.active { display: block; }
         .fade-in { opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.2,0.6,0.2,1); }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+        /* SECTIONS */
         .hero { height: 100vh; display:flex; flex-direction:column; justify-content:center; padding: 0 10%; background: radial-gradient(circle at 20% 50%, #111 0%, #000 100%); }
         .hero h1 { font-size: clamp(3rem, 12vw, 7.5rem); font-weight:900; line-height:0.9; letter-spacing:-2px; }
 
@@ -63,32 +62,34 @@
         .model-container { flex:1.2; height: 70vh; position:relative; }
         model-viewer { width:100%; height:100%; }
 
-        /* SHOP ELEMENTS */
-        .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; padding: 40px 10%; }
+        /* SHOP GRID */
+        .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
         .card { background: transparent; padding: 28px 20px; transition:0.3s; border-radius:8px; display:flex; flex-direction:column; align-items:center; text-align:center; border: 1px solid transparent; }
-        .card:hover { border-color: rgba(191,255,0,0.2); background: rgba(255,255,255,0.01); }
-        .product-thumb { height: 320px; margin-bottom: 10px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow: hidden; }
-        .product-thumb img { height: 100%; transition: 0.4s; }
-        .product-thumb:hover img { transform: scale(1.05); }
-
+        .card:hover { border-color: rgba(191,255,0,0.1); background: rgba(255,255,255,0.01); }
         .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size:1.25rem; margin:8px 0; }
-        .btn-shop { background: var(--accent); color: #000; border:none; padding:12px 20px; font-weight:900; text-transform:uppercase; letter-spacing:1px; border-radius:6px; cursor:pointer; width: 100%; transition: 0.3s; }
-        .btn-shop:hover { background: white; }
+        .btn-shop { background: var(--accent); color: #000; border:none; padding:12px 20px; font-weight:900; text-transform:uppercase; letter-spacing:1px; border-radius:6px; cursor:pointer; width: 100%; }
 
-        /* CHARTS */
-        .chart-panel { margin-top:18px; background: rgba(255,255,255,0.02); border-radius:10px; padding:18px; width: 100%; }
-        .chart-row { display:flex; gap:16px; height: 300px; }
-        .chart-large { flex:2; position:relative; min-width: 0; }
-        .chart-small { flex:1; position:relative; min-width: 0; }
+        /* PRODUCT PAGE */
+        .product-page { padding: 120px 10% 100px; }
+        .product-hero { display:flex; gap:48px; }
+        .chart-panel { margin-top: 30px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 24px; width: 100%; }
+        .chart-row { display:flex; gap:20px; height: 300px; }
+        .chart-large { flex: 2; position: relative; }
+        .chart-small { flex: 1; position: relative; }
+
+        /* PROFESSIONAL ANALYSIS BLOCK */
+        .analysis-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 25px; border-top: 1px solid var(--line); padding-top: 20px; }
+        .analysis-item h5 { font-size: 0.6rem; color: var(--accent); text-transform: uppercase; margin-bottom: 5px; }
+        .analysis-item p { font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; }
 
         /* CART DRAWER */
         #cart-drawer { position: fixed; right: -400px; top: 0; width: 400px; height: 100vh; background: var(--surface); z-index: 2000; transition: 0.4s; padding: 40px; border-left: 1px solid var(--accent); }
         #cart-drawer.open { right: 0; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
-        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:none; z-index:1500; }
-        .overlay.active { display:block; }
+        .cart-item { display:flex; justify-content:space-between; padding: 15px 0; border-bottom: 1px solid var(--line); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 1500; }
+        .overlay.active { display: block; }
 
-        footer { padding: 50px 10%; border-top:1px solid rgba(255,255,255,0.03); color:var(--text-dim); text-align:center; }
+        @media (max-width: 1000px) { .product-hero { flex-direction: column; } .chart-row { flex-direction: column; height: auto; } .chart-large, .chart-small { height: 250px; } }
     </style>
 </head>
 <body>
@@ -100,28 +101,24 @@
             <a onclick="switchPage('missions')" id="link-missions">Missions</a>
             <a onclick="switchPage('shop')" id="link-shop">Shop</a>
         </div>
-        <div style="display:flex; gap: 20px; align-items:center;">
-            <button class="cart-trigger" onclick="toggleCart()">
-                🛒 <span id="cart-count">0</span>
+        <div style="display:flex; gap:15px; align-items:center;">
+            <button class="cart-btn" onclick="toggleCart()">
+                <span class="mono" style="margin:0;">CART</span>
+                <span id="cart-count">0</span>
             </button>
-            <div class="timer-box">
-                <span class="timer-label">UPCOMING LAUNCH</span>
-                <span id="countdown" class="timer-value">T-00:00:00:00</span>
-            </div>
         </div>
     </nav>
 
-    <div id="overlay" class="overlay" onclick="toggleCart()"></div>
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
     <div id="cart-drawer">
-        <h2 class="mono" style="margin-bottom: 20px;">Twój Koszyk</h2>
-        <div id="cart-content"></div>
-        <div style="margin-top: 20px; border-top: 1px solid var(--accent); padding-top: 20px;">
+        <h2 class="mono" style="font-size: 1.5rem; margin-bottom: 30px;">Order_Manifest</h2>
+        <div id="cart-items-container"></div>
+        <div style="margin-top: 40px; border-top: 2px solid var(--accent); padding-top: 20px;">
             <div style="display:flex; justify-content:space-between; margin-bottom: 20px;">
-                <span>Suma:</span>
-                <span id="cart-total" class="price">0 PLN</span>
+                <span class="mono">Total_Value</span>
+                <span id="cart-total" class="price" style="margin:0;">0 PLN</span>
             </div>
-            <button class="btn-shop" onclick="alert('Checkout integration here')">Kup Teraz</button>
-            <button class="btn-shop" style="background:none; color:white; border:1px solid #333; margin-top:10px;" onclick="toggleCart()">Zamknij</button>
+            <button class="btn-shop" onclick="alert('Proceeding to encrypted checkout...')">Execute Transaction</button>
         </div>
     </div>
 
@@ -139,10 +136,14 @@
         </section>
 
         <section class="rocket-viewer-section">
-            <div class="info-panel fade-in" style="flex:1;">
+            <div class="info-panel fade-in">
                 <span class="mono">[SYSTEM_SPECIFICATIONS]</span>
                 <h2 style="font-size:2.8rem; margin:12px 0;">The Leveler</h2>
-                <p style="color: var(--text-dim);">Pułap docelowy: 250,000 FT</p>
+                <p style="color:var(--text-dim); margin-bottom:20px;">Pionowy system wynoszenia zaprojektowany do dokumentacji horyzontu na ekstremalnych pułapach.</p>
+                <div style="border-left: 2px solid var(--accent); padding-left: 20px;">
+                    <p class="mono" style="color:white; font-size:0.8rem;">APOGEE: 250,000 FT</p>
+                    <p class="mono" style="color:white; font-size:0.8rem;">PROPULSION: G-CLASS v2</p>
+                </div>
             </div>
             <div class="model-container">
                 <model-viewer src="rakieta.glb" auto-rotate rotation-speed="40deg" shadow-intensity="2" exposure="1.2" camera-controls></model-viewer>
@@ -152,64 +153,70 @@
 
     <div id="page-missions" class="page">
         <section style="padding:140px 10% 80px;">
-            <span class="mono">[OPERATIONS]</span>
-            <h1 style="font-size:2.8rem; margin-bottom:30px;">Missions</h1>
-            <div class="grid" style="padding:0;">
-                <div class="card"><span class="mono">M01</span><h3>Rocket Simon</h3><p>Długodystansowy lot testowy.</p></div>
-                <div class="card"><span class="mono">M02</span><h3>Ice Wall Recon</h3><p>Badania krawędzi.</p></div>
+            <span class="mono">[STRATEGIC_OPERATIONS]</span>
+            <h1 style="font-size:2.8rem; margin-bottom:30px;">Operations</h1>
+            <div class="grid">
+                <div class="card fade-in"><span class="mono">M01</span><h3>Rocket Simon</h3><p style="color:var(--text-dim);">Flight stability test.</p></div>
+                <div class="card fade-in"><span class="mono">M02</span><h3>Ice Wall Recon</h3><p style="color:var(--text-dim);">Horizon mapping mission.</p></div>
             </div>
         </section>
     </div>
 
     <div id="page-shop" class="page">
-        <section style="padding:120px 0 80px;">
-            <div style="padding: 0 10%;"><span class="mono">[GEAR]</span><h1>Sklep</h1></div>
+        <section style="padding:120px 10% 80px;">
+            <span class="mono">[COMMERCIAL_UNIT]</span>
+            <h1 style="font-size:2.6rem; margin-bottom:20px;">Gear</h1>
             <div class="grid">
-                <div class="card">
-                    <div class="product-thumb" onclick="openProduct('bluza')"><img src="bluza_przod.png"></div>
+                <div class="card fade-in">
+                    <div class="product-thumb" onclick="openProduct('bluza')"><img src="bluza_przod.png" style="height:100%;"></div>
                     <h3>Beyond the Curve Hoodie</h3>
                     <span class="price">249 PLN</span>
-                    <button class="btn-shop" onclick="openProduct('bluza')">Szczegóły</button>
+                    <button class="btn-shop" onclick="openProduct('bluza')">View Details</button>
                 </div>
-                <div class="card">
-                    <div class="product-thumb" onclick="openProduct('engine')"><img src="g_motor.png"></div>
+                <div class="card fade-in">
+                    <div class="product-thumb" onclick="openProduct('engine')"><img src="g_motor.png" style="height:100%;"></div>
                     <h3>G-Class Engine Model</h3>
                     <span class="price">599 PLN</span>
-                    <button class="btn-shop" onclick="openProduct('engine')">Szczegóły</button>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <div id="page-shop-bluza" class="page">
-        <section style="padding: 120px 10%;">
-            <button onclick="switchPage('shop')" class="mono" style="background:none; border:none; cursor:pointer; margin-bottom:20px;">← POWRÓT</button>
-            <div style="display:flex; gap:50px; align-items:center;">
-                <img src="bluza_przod.png" style="width:400px; background:var(--surface); border-radius:15px; padding:20px;">
-                <div>
-                    <h2>Beyond the Curve Hoodie</h2>
-                    <div class="price">249 PLN</div>
-                    <button class="btn-shop" onclick="addToCart('Beyond the Curve Hoodie', 249)">Dodaj do koszyka</button>
+                    <button class="btn-shop" onclick="openProduct('engine')">View Stats</button>
                 </div>
             </div>
         </section>
     </div>
 
     <div id="page-shop-engine" class="page">
-        <section style="padding: 120px 10%;">
-            <button onclick="switchPage('shop')" class="mono" style="background:none; border:none; cursor:pointer; margin-bottom:20px;">← POWRÓT</button>
-            <div style="display:flex; gap:50px; flex-wrap:wrap;">
-                <img src="g_motor.png" style="width:400px; background:var(--surface); border-radius:15px; padding:20px;">
-                <div style="flex:1; min-width:300px;">
-                    <h2>G-Class Engine Model</h2>
+        <section class="product-page">
+            <button class="back-link" onclick="switchPage('shop')" style="background:none; border:1px solid var(--line); color:white; padding:10px; cursor:pointer; margin-bottom:20px;">← BACK TO SHOP</button>
+            <div class="product-hero">
+                <div style="flex:1"><img src="g_motor.png" style="width:100%; filter: drop-shadow(0 0 30px rgba(191,255,0,0.1));"></div>
+                <div style="flex:1.5">
+                    <span class="mono">[HARDWARE_UNIT_G2]</span>
+                    <h2 style="font-size:3rem;">G-Class Scale Model</h2>
                     <div class="price">599 PLN</div>
-                    <button class="btn-shop" onclick="addToCart('G-Class Engine Model', 599)">Dodaj do koszyka</button>
-                    
+                    <button class="btn-shop" onclick="addToCart('G-Class Engine Model', 599)">Pre-order Hardware</button>
+
                     <div class="chart-panel">
-                        <div class="mono" style="margin-bottom:10px;">TELEMETRY_DATA</div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                            <span class="mono">THRUST_TELEMETRY (STATIC_FIRE_04)</span>
+                            <button class="small-btn" id="downloadCSV" style="background:none; border:1px solid var(--accent); color:var(--accent); padding:2px 8px; font-size:0.6rem; cursor:pointer;">EXPORT CSV</button>
+                        </div>
                         <div class="chart-row">
                             <div class="chart-large"><canvas id="thrustChart"></canvas></div>
                             <div class="chart-small"><canvas id="thrustZoom"></canvas></div>
+                        </div>
+
+                        <div class="analysis-grid">
+                            <div class="analysis-item">
+                                <h5>Ignition Phase</h5>
+                                <p>Gwałtowny wzrost ciśnienia w komorze (0.2s - 1.4s). System osiąga Peak Thrust przy 1.9s.</p>
+                            </div>
+                            <div class="analysis-item">
+                                <h5>Steady State</h5>
+                                <p>Stabilizacja ciągu na poziomie 0.8-0.9N po odrzuceniu boostera startowego (4s+).</p>
+                            </div>
+                            <div class="analysis-item">
+                                <h5>Burnout Profile</h5>
+                                <p>Linearny spadek ciśnienia po 15.2s, minimalizujący wstrząsy strukturalne rakiety.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,29 +224,43 @@
         </section>
     </div>
 
-    <footer>&copy; 2026 FLAT EARTH ROCKET CORPORATION.</footer>
+    <div id="page-shop-bluza" class="page">
+        <section class="product-page">
+            <button class="back-link" onclick="switchPage('shop')" style="background:none; border:1px solid var(--line); color:white; padding:10px; cursor:pointer; margin-bottom:20px;">← BACK TO SHOP</button>
+            <div class="product-hero">
+                <div style="flex:1"><img src="bluza_przod.png" style="width:100%;"></div>
+                <div style="flex:1">
+                    <span class="mono">[TEXTILE_UNIT]</span>
+                    <h2 style="font-size:3rem;">Beyond the Curve</h2>
+                    <div class="price">249 PLN</div>
+                    <p style="color:var(--text-dim); margin:20px 0;">Heavyweight cotton blend. Engineered for high-altitude observation sessions.</p>
+                    <button class="btn-shop" onclick="addToCart('Beyond the Curve Hoodie', 249)">Add to Cart</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>&copy; 2026 FLAT EARTH ROCKET CORPORATION. NO CURVE DETECTED.</footer>
 
     <script>
-        // --- DATA ---
+        // DATA & STATE
         let cart = JSON.parse(localStorage.getItem('ferc_cart')) || [];
-        const thrustCSV = `0.000,-0.072,0.167,-0.107,0.890,-0.005,1.431,14.262,1.972,71.149,2.514,33.503,3.055,0.484,4.047,0.843,6.032,0.879,10.001,0.678,16.136,-0.001`;
+        const thrustCSV = `0.000,-0.072, 0.528,-0.074, 1.431,14.262, 1.972,71.149, 2.514,33.503, 4.047,0.843, 6.032,0.879, 10.001,0.678, 15.054,0.351, 16.136,-0.001`;
 
-        // --- PAGE LOGIC ---
         function switchPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            const el = document.getElementById('page-' + page);
-            if(el) el.classList.add('active');
+            document.getElementById('page-' + page).classList.add('active');
             const link = document.getElementById('link-' + (page.includes('shop') ? 'shop' : page));
             if(link) link.classList.add('active');
             window.scrollTo(0,0);
-            refreshAnimations();
             if(page === 'shop-engine') setTimeout(initCharts, 100);
+            refreshAnimations();
         }
 
         function openProduct(id) { switchPage('shop-' + id); }
 
-        // --- SHOP LOGIC ---
+        // CART LOGIC
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
@@ -247,54 +268,76 @@
 
         function addToCart(name, price) {
             cart.push({id: Date.now(), name, price});
-            updateCart();
+            updateCartUI();
             toggleCart();
         }
 
-        function updateCart() {
+        function updateCartUI() {
             localStorage.setItem('ferc_cart', JSON.stringify(cart));
-            const content = document.getElementById('cart-content');
+            const container = document.getElementById('cart-items-container');
             const totalEl = document.getElementById('cart-total');
             const countEl = document.getElementById('cart-count');
-            content.innerHTML = '';
+            
+            container.innerHTML = '';
             let total = 0;
-            cart.forEach(item => {
+            cart.forEach((item, index) => {
                 total += item.price;
-                content.innerHTML += `<div class="cart-item"><span>${item.name}</span><strong>${item.price} PLN</strong></div>`;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <div class="mono" style="font-size:0.7rem">${item.name}</div>
+                            <div style="font-size:0.8rem">${item.price} PLN</div>
+                        </div>
+                        <button onclick="removeItem(${index})" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size:0.6rem;">REMOVE</button>
+                    </div>`;
             });
             totalEl.innerText = total + ' PLN';
             countEl.innerText = cart.length;
         }
 
-        // --- CHARTS & TIMER ---
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // CHARTS
         function initCharts() {
-            const ctx = document.getElementById('thrustChart').getContext('2d');
-            new Chart(ctx, {
+            const data = {
+                labels: [0, 1, 2, 3, 4, 6, 10, 15, 16],
+                datasets: [{
+                    label: 'Thrust (N)',
+                    data: [0, 5, 71, 30, 0.8, 0.8, 0.7, 0.3, 0],
+                    borderColor: '#bfff00',
+                    backgroundColor: 'rgba(191,255,0,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+
+            new Chart(document.getElementById('thrustChart'), {
+                type: 'line',
+                data: data,
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1a1a1a' } }, x: { grid: { display: false } } } }
+            });
+
+            new Chart(document.getElementById('thrustZoom'), {
                 type: 'line',
                 data: {
-                    labels: [0, 1, 2, 3, 5, 10, 16],
-                    datasets: [{ label: 'Thrust', data: [0, 10, 70, 30, 1, 0.8, 0], borderColor: '#bfff00', tension: 0.4, fill: true, backgroundColor: 'rgba(191,255,0,0.1)' }]
+                    labels: [1.5, 1.7, 1.9, 2.1, 2.3],
+                    datasets: [{ data: [20, 55, 71, 65, 40], borderColor: '#fff', tension: 0.4, pointRadius: 0 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
             });
         }
 
-        function updateCountdown() {
-            const d = Math.max(0, new Date(2026, 5, 21) - Date.now());
-            const days = String(Math.floor(d / 86400000)).padStart(2,'0');
-            const hrs = String(Math.floor((d % 86400000) / 3600000)).padStart(2,'0');
-            const mins = String(Math.floor((d % 3600000) / 60000)).padStart(2,'0');
-            const secs = String(Math.floor((d % 60000) / 1000)).padStart(2,'0');
-            document.getElementById('countdown').innerText = `T-${days}:${hrs}:${mins}:${secs}`;
-        }
-
         function refreshAnimations() {
-            const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('visible')));
-            document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+            });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCart();
+        updateCartUI();
         refreshAnimations();
     </script>
 </body>
