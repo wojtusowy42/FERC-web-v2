@@ -81,7 +81,6 @@
         }
         .status-quo h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.1; max-width: 1000px; text-transform: uppercase; font-weight: 900; position: relative; z-index: 2; }
         
-        /* FIX: ENGINEERING THE TRUTH */
         .status-quo::after {
             content: "ENGINEERING THE TRUTH";
             position: absolute; right: 0; bottom: 0;
@@ -102,20 +101,43 @@
         }
         model-viewer { width: 100%; height: 100%; outline: none; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-        .card { background: var(--bg); padding: 80px 50px; transition: 0.4s; }
+        /* SKLEP I GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+        .card { background: var(--bg); padding: 40px; transition: 0.4s; position: relative; }
         .card:hover { background: #050505; }
-        .card h3 { color: var(--accent); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; margin-top: 10px; }
+        .card h3 { color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; font-size: 1rem; margin-top: 15px; }
 
-        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 1.5rem; margin: 20px 0; display: block; }
-        .btn-shop { background: var(--accent); color: black; border: none; padding: 15px 30px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 0.7rem; }
+        /* EFEKT BLUZY (HOVER CHANGE) */
+        .product-image-container { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 1/1; 
+            overflow: hidden; 
+            cursor: pointer;
+            border: 1px solid var(--line);
+        }
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+        .product-image.back {
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0;
+        }
+        .product-image-container:hover .product-image.front { opacity: 0; }
+        .product-image-container:hover .product-image.back { opacity: 1; }
+
+        .price { font-family: 'JetBrains Mono'; color: var(--accent); font-size: 1.2rem; margin: 15px 0; display: block; }
+        .btn-shop { background: var(--accent); color: black; border: none; padding: 12px 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; font-size: 0.7rem; width: 100%; }
 
         footer { padding: 60px 10%; border-top: 1px solid var(--line); color: var(--text-dim); font-size: 0.7rem; text-align: center; letter-spacing: 2px; }
 
         @media (max-width: 1024px) {
             .nav-links { display: none; }
             .rocket-viewer-section { flex-direction: column; }
-            .status-quo::after { font-size: 4rem; }
         }
     </style>
 </head>
@@ -165,17 +187,17 @@
             <div class="card fade-in">
                 <span class="mono">TECH_CORE</span>
                 <h3>Silniki Klasy G</h3>
-                <p>Nasz autorski napęd wysokoprężny zaprojektowany do stabilnego lotu w próżni niskiego pułapu. Maksymalny ciąg przy minimalnej masie.</p>
+                <p>Nasz autorski napęd wysokoprężny zaprojektowany do stabilnego lotu w próżni niskiego pułapu.</p>
             </div>
             <div class="card fade-in">
                 <span class="mono">MODULE_02</span>
                 <h3>Sensory</h3>
-                <p>Niezależna mechanika bezwładnościowa bez korygowania danych przez systemy zewnętrzne.</p>
+                <p>Niezależna mechanika bezwładnościowa bez korygowania danych.</p>
             </div>
             <div class="card fade-in">
                 <span class="mono">MODULE_03</span>
                 <h3>Dane</h3>
-                <p>Zaszyfrowany przesył w czasie rzeczywistym. Surowy plik prosto z sensora.</p>
+                <p>Zaszyfrowany przesył w czasie rzeczywistym. Surowy plik RAW.</p>
             </div>
         </section>
     </div>
@@ -189,21 +211,13 @@
                 <div class="card fade-in">
                     <span class="mono">FLAGSHIP_PROJECT</span>
                     <h3>Rocket Simon</h3>
-                    <p style="color: var(--text-dim);">Największa jednostka w historii FERC. Przełomowa konstrukcja zdolna do wyniesienia ciężkiego sprzętu optycznego na rekordowe wysokości.</p>
+                    <p style="color: var(--text-dim);">Największa jednostka FERC. Ciężki ładunek optyczny. Start planowany na lato.</p>
                     <div class="price" style="font-size: 0.9rem; margin-top: 20px;">START: LATO 2026</div>
-                    <span class="mono">[STATUS: FINAL_ASSEMBLY]</span>
                 </div>
                 <div class="card fade-in">
                     <span class="mono">ENGINEERING_DEPT</span>
-                    <h3>Silniki Klasy G</h3>
-                    <p style="color: var(--text-dim);">Proces tworzenia nowej generacji silników o zoptymalizowanym wektorowaniu ciągu. Solidna inżynieria dla bezkompromisowej prawdy.</p>
-                    <span class="mono" style="margin-top: 30px;">[STATUS: TESTING_PHASE]</span>
-                </div>
-                <div class="card fade-in">
-                    <span class="mono">MISSION_03</span>
-                    <h3>Ice Wall Recon</h3>
-                    <p style="color: var(--text-dim);">Długodystansowy lot w kierunku barier południowych w celu mapowania terenu.</p>
-                    <span class="mono" style="margin-top: 30px;">[STATUS: PLANNING]</span>
+                    <h3>G-Class Engine</h3>
+                    <p style="color: var(--text-dim);">Nowa generacja silników o zoptymalizowanym wektorowaniu ciągu.</p>
                 </div>
             </div>
         </section>
@@ -214,15 +228,23 @@
             <span class="mono">[COMMERCIAL_UNIT]</span>
             <h1 style="font-size: clamp(3rem, 10vw, 6rem); text-transform: uppercase; font-weight: 900; margin-bottom: 50px;">Gear</h1>
             
-    <div class="card">
-        <img src="bluza_front.png" alt="FERC Hoodie Front" style="width: 100%; height: auto; margin-bottom: 20px;">
-        <h3>"Beyond the Curve" Hoodie</h3>
-        <span class="price">249 PLN</span>
-        <button class="btn-shop">Buy Gear</button>
-    </div>
+            <div class="grid">
                 <div class="card fade-in">
-                    <div style="height: 250px; background: #0a0a0a; border: 1px solid #1a1a1a; margin-bottom: 20px;"></div>
-                    <h3>G-Class Engine Scale Model</h3>
+                    <div class="product-image-container" onclick="window.open('bluza_front.png', '_blank')">
+                        <img src="bluza_front.png" class="product-image front" alt="Front">
+                        <img src="bluza_tyl.png" class="product-image back" alt="Back">
+                    </div>
+                    <h3>Beyond the Curve Hoodie</h3>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">Style: Oversize Baggy / Heavy Cotton</p>
+                    <span class="price">249 PLN</span>
+                    <button class="btn-shop">Buy Gear</button>
+                </div>
+
+                <div class="card fade-in">
+                    <div style="height: 280px; background: #0a0a0a; border: 1px solid #1a1a1a; display:flex; align-items:center; justify-content:center;">
+                        <span class="mono" style="opacity:0.3">Coming Soon</span>
+                    </div>
+                    <h3>G-Class Model</h3>
                     <span class="price">599 PLN</span>
                     <button class="btn-shop">Pre-order</button>
                 </div>
@@ -276,7 +298,7 @@
         refreshAnimations();
 
         function updateCountdown() {
-            const targetDate = new Date(2026, 5, 21).getTime(); // Ustawione na początek lata
+            const targetDate = new Date(2026, 5, 21).getTime();
             const now = new Date().getTime();
             const d = targetDate - now;
             const days = Math.floor(d / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
@@ -287,7 +309,5 @@
         }
         setInterval(updateCountdown, 1000);
     </script>
-
 </body>
 </html>
-
